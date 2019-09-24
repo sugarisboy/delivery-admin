@@ -6,8 +6,9 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import Title from './Title';
+import Title from '../Title';
 import { connect } from 'react-redux'
+import { get } from '../../service/api'
 
 class DashboardOrders extends React.Component {
 
@@ -17,11 +18,26 @@ class DashboardOrders extends React.Component {
       seeMore: {
         marginTop: theme.spacing(3),
       },
-    }));
+    }))
+
+    this.state = {
+      orders: []
+    }
   }
 
-  componentDidMount() {
-
+  async componentDidMount() {
+    try {
+      const resp = await get('/order/page?pageSize=5&pageNumber=1')
+      const orders = resp.data.orders
+      console.log(orders)
+      if (orders){
+        this.setState({
+          orders: orders
+        })
+      }
+    } catch (e) {
+      console.log(e)
+    }
   }
 
 
@@ -36,17 +52,19 @@ class DashboardOrders extends React.Component {
                 <TableCell>Name</TableCell>
                 <TableCell>Phone</TableCell>
                 <TableCell>Shop ID</TableCell>
-                <TableCell align="right">Sale Amount</TableCell>
+                <TableCell>Time</TableCell>
+                <TableCell align="right">Address</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {this.rows.map(row => (
-                  <TableRow key={row.id}>
-                    <TableCell>{row.date}</TableCell>
-                    <TableCell>{row.name}</TableCell>
-                    <TableCell>{row.shipTo}</TableCell>
-                    <TableCell>{row.paymentMethod}</TableCell>
-                    <TableCell align="right">{row.amount}</TableCell>
+              {this.state.orders && this.state.orders.map(order => (
+                  <TableRow key={order.id}>
+                    <TableCell>{order.id}</TableCell>
+                    <TableCell>{order.name}</TableCell>
+                    <TableCell>{order.phone}</TableCell>
+                    <TableCell>{order.shopId}</TableCell>
+                    <TableCell>{order.createdTime}</TableCell>
+                    <TableCell align="right">{order.address}</TableCell>
                   </TableRow>
               ))}
             </TableBody>
