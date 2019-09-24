@@ -1,18 +1,21 @@
 import { post } from '../service/api'
 import { LOGIN_FAIL, LOGIN_SUCCESS } from './action-types'
-import { AuthData } from '../service/AuthData'
 
-function successLogin(dispatch) {
-    dispatch({
-        type: LOGIN_SUCCESS
-    })
+export function successLogin() {
+    return dispatch => {
+        dispatch({
+            type: LOGIN_SUCCESS
+        })
+    }
 }
 
-function failLogin(dispatch, error) {
-    dispatch({
-        type: LOGIN_FAIL,
-        payload: error
-    })
+export function failLogin(error) {
+    return dispatch => {
+        dispatch({
+            type: LOGIN_FAIL,
+            payload: error
+        })
+    }
 }
 
 export function login(username, password) {
@@ -24,13 +27,13 @@ export function login(username, password) {
             const {access} = response.data
             if (access) {
                 localStorage.setItem('token', access)
-                successLogin(dispatch)
+                successLogin()(dispatch)
                 console.log('success login', access)
             } else {
-                failLogin(dispatch, 'Unknown Error')
+                failLogin('Unknown Error')(dispatch)
             }
         } catch (e) {
-            failLogin(dispatch, e.response)
+            failLogin(e.response)(dispatch)
         }
     }
 }
