@@ -1,60 +1,24 @@
 import React from 'react'
 import LoginPage from '../LoginPage'
-import { Route } from 'react-router-dom'
+import { Route, Switch } from 'react-router-dom'
 import Dashboard from '../Dashboard'
 import { connect } from 'react-redux'
-import { failLogin, successLogin } from '../../actions/login-actions'
-import moment from 'moment'
+import { checkAuth } from '../../actions/login-actions'
 
 class App extends React.Component {
 
     constructor(props) {
         super(props)
-
-        this.checkAuth()
-    }
-
-    checkAuth() {
-        const token = localStorage.getItem('token')
-        if (!token) {
-            this.props.failLogin()
-        } else {
-            const tokenData = parseJwt(token)
-            const now = moment()
-            const expDate = moment(tokenData.exp * 1000)
-
-            if (expDate.isAfter(now)) {
-                this.props.successLogin()
-            } else {
-                this.props.failLogin()
-            }
-        }
-
-        function parseJwt(token) {
-            const base64Url = token.split('.')[1];
-            const base64 = base64Url
-                .replace(/-/g, '+')
-                .replace(/_/g, '/')
-
-            const jsonPayload = decodeURIComponent(
-                atob(base64)
-                    .split('')
-                    .map(c => ('%'
-                                + (
-                                    '00' + c.charCodeAt(0).toString(16)
-                                ).slice(-2)).join(''))
-            )
-
-            return JSON.parse(jsonPayload);
-        }
+        this.props.checkAuth()
     }
 
     render() {
+
         return (
             <div>
-                <Route path="/admin/">
+                <Switch>
                     { this.props.isLoggedIn ? <Dashboard/> : <LoginPage/> }
-                </Route>
+                </Switch>
             </div>
         )
     }
@@ -69,8 +33,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        successLogin: () => dispatch(successLogin()),
-        failLogin: () => dispatch(failLogin())
+        checkAuth: () => dispatch(checkAuth())
     }
 }
 
