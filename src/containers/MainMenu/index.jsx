@@ -16,7 +16,7 @@ class MainMenu extends React.PureComponent {
             {
                 title: 'Dashboard',
                 icon: <DashboardIcon/>,
-                href: '/admin'
+                href: '/'
             },
             {
                 title: 'Orders',

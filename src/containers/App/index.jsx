@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import LoginPage from '../LoginPage'
-import { Route, Switch } from 'react-router-dom'
-import Dashboard from '../Dashboard'
+import AdminPanel from '../AdminPanel'
 import { connect } from 'react-redux'
 import { checkAuth } from '../../actions/login-actions'
+import { BrowserRouter } from 'react-router-dom'
 
 class App extends React.Component {
 
@@ -15,11 +15,11 @@ class App extends React.Component {
     render() {
 
         return (
-            <div>
-                <Switch>
-                    { this.props.isLoggedIn ? <Dashboard/> : <LoginPage/> }
-                </Switch>
-            </div>
+            <BrowserRouter>
+                <Fragment>
+                    { this.props.isLoggedIn ? <AdminPanel/> : <LoginPage/> }
+                </Fragment>
+            </BrowserRouter>
         )
     }
 
