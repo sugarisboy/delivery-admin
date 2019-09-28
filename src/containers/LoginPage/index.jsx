@@ -5,7 +5,6 @@ import TextField from '@material-ui/core/TextField'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Checkbox from '@material-ui/core/Checkbox'
 import Typography from '@material-ui/core/Typography'
-import { makeStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
 import { login } from '../../actions/login-actions'
 import { connect } from 'react-redux'
@@ -14,31 +13,6 @@ class LoginPage extends React.Component {
 
     constructor(props) {
         super(props)
-        this.classes = makeStyles(theme => ({
-            '@global': {
-                body: {
-                    backgroundColor: theme.palette.common.white,
-                },
-            },
-            paper: {
-                marginTop: theme.spacing(8),
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-            },
-            avatar: {
-                margin: theme.spacing(1),
-                backgroundColor: theme.palette.secondary.main,
-            },
-            form: {
-                width: '100%', // Fix IE 11 issue.
-                marginTop: theme.spacing(1),
-            },
-            submit: {
-                margin: theme.spacing(3, 0, 2),
-            },
-        }))
-
         this.state = {
             username: '',
             password: ''
@@ -70,12 +44,11 @@ class LoginPage extends React.Component {
         return (
             <Container component="main" maxWidth="xs">
                 <CssBaseline/>
-                <div className={this.classes.paper}>
+                <div>
                     <Typography component="h1" variant="h5">
                         Admin login
                     </Typography>
-                    <form className={this.classes.form}
-                          onSubmit={this.authorize.bind(this)}
+                    <form onSubmit={this.authorize.bind(this)}
                           noValidate>
                         <TextField
                             variant="outlined"
@@ -110,7 +83,6 @@ class LoginPage extends React.Component {
                             fullWidth
                             variant="contained"
                             color="primary"
-                            className={this.classes.submit}
                         >
                             Sign In
                         </Button>

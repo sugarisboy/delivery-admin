@@ -1,12 +1,11 @@
-import React from 'react';
-import Link from '@material-ui/core/Link';
-import { makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Title from '../Title';
+import React from 'react'
+import Link from '@material-ui/core/Link'
+import Table from '@material-ui/core/Table'
+import TableBody from '@material-ui/core/TableBody'
+import TableCell from '@material-ui/core/TableCell'
+import TableHead from '@material-ui/core/TableHead'
+import TableRow from '@material-ui/core/TableRow'
+import Title from '../Title'
 import { connect } from 'react-redux'
 import { get } from '../../service/api'
 
@@ -14,11 +13,6 @@ class DashboardOrders extends React.Component {
 
   constructor(props) {
     super(props)
-    this.classes = makeStyles(theme => ({
-      seeMore: {
-        marginTop: theme.spacing(3),
-      },
-    }))
 
     this.state = {
       orders: []
@@ -69,7 +63,7 @@ class DashboardOrders extends React.Component {
               ))}
             </TableBody>
           </Table>
-          <div className={this.classes.seeMore}>
+          <div>
             <Link color="primary" href="#">
               See more orders
             </Link>

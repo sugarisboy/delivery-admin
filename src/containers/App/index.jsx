@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import LoginPage from '../LoginPage'
 import AdminPanel from '../AdminPanel'
 import { connect } from 'react-redux'
@@ -16,9 +16,9 @@ class App extends React.Component {
 
         return (
             <BrowserRouter>
-                <Fragment>
+                <React.Fragment>
                     { this.props.isLoggedIn ? <AdminPanel/> : <LoginPage/> }
-                </Fragment>
+                </React.Fragment>
             </BrowserRouter>
         )
     }

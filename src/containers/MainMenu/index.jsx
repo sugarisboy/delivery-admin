@@ -51,9 +51,10 @@ class MainMenu extends React.PureComponent {
             <div>
                 {this.items.map(item => (
                     <ListItem button
-                              component={props => (
-                                  <Link to={item.href} {...props}/>
-                              )}>
+                              key={item.title}
+                              component={React.forwardRef((props, ref) => (
+                                  <Link to={item.href} ref={ref} {...props}/>
+                              ))}>
                         <ListItemIcon>
                             {item.icon}
                         </ListItemIcon>
