@@ -5,6 +5,7 @@ import CssBaseline from '@material-ui/core/CssBaseline'
 import Container from '@material-ui/core/Container'
 import Dashboard from '../Dashboard'
 import DashboardOrders from '../DashboardOrders'
+import DashboardShops from '../DashboardShops'
 import Bar from '../Bar'
 import MenuPanel from '../MenuPanel'
 import { withStyles } from '@material-ui/core'
@@ -45,6 +46,9 @@ class AdminPanel extends React.Component {
                             </Route>
                             <Route path='/orders'>
                                 <DashboardOrders/>
+                            </Route>
+                            <Route path='/shops'>
+                                <DashboardShops/>
                             </Route>
                         </Switch>
                     </Container>

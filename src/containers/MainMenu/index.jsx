@@ -5,6 +5,7 @@ import ListItemText from '@material-ui/core/ListItemText'
 import DashboardIcon from '@material-ui/icons/Dashboard'
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart'
 import PeopleIcon from '@material-ui/icons/People'
+import ReceiptIcon from '@material-ui/icons/Receipt'
 import { Link } from 'react-router-dom'
 import { withStyles } from '@material-ui/core'
 
@@ -25,18 +26,18 @@ class MainMenu extends React.PureComponent {
             },
             {
                 title: 'Orders',
-                icon: <ShoppingCartIcon/>,
+                icon: <ReceiptIcon/>,
                 href: '/orders'
+            },
+            {
+                title: 'Shops',
+                icon: <ShoppingCartIcon/>,
+                href: '/shops'
             },
             {
                 title: 'Customers',
                 icon: <PeopleIcon/>,
                 href: '/customers'
-            },
-            {
-                title: 'Partners',
-                icon: <PeopleIcon/>,
-                href: '/partners'
             },
             {
                 title: 'Finance',

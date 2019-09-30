@@ -23,7 +23,7 @@ class DashboardOrders extends React.Component {
     try {
       const resp = await get('/order/page?pageSize=5&pageNumber=1')
       const orders = resp.data.orders
-      console.log(orders)
+
       if (orders){
         this.setState({
           orders: orders
