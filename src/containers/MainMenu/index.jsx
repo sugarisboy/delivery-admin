@@ -6,6 +6,11 @@ import DashboardIcon from '@material-ui/icons/Dashboard'
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart'
 import PeopleIcon from '@material-ui/icons/People'
 import { Link } from 'react-router-dom'
+import { withStyles } from '@material-ui/core'
+
+const styles = theme => ({
+
+})
 
 class MainMenu extends React.PureComponent {
 
@@ -68,4 +73,4 @@ class MainMenu extends React.PureComponent {
 
 }
 
-export default MainMenu
+export default withStyles(styles)(MainMenu)

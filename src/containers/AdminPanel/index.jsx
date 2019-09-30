@@ -9,23 +9,36 @@ import Bar from '../Bar'
 import MenuPanel from '../MenuPanel'
 import { withStyles } from '@material-ui/core'
 
-const styles = {
+const styles = theme => ({
     root: {
         display: 'flex'
+    },
+    container: {
+        paddingTop: theme.spacing(4),
+        paddingBottom: theme.spacing(4),
+        marginLeft: 167
+    },
+    spacer: theme.mixins.toolbar,
+    content: {
+        flexGrow: 1,
+        height: '100vh',
+        overflow: 'auto',
     }
-}
+})
 
 class AdminPanel extends React.Component {
 
     render() {
+        const {classes} = this.props
+
         return (
             <React.Fragment>
                 <CssBaseline />
                 <Bar/>
                 <MenuPanel/>
-                <main>
-                    <div/>
-                    <Container maxWidth="lg">
+                <main className={classes.content}>
+                    <div className={classes.spacer}/>
+                    <Container maxWidth="lg" className={classes.container}>
                         <Switch>
                             <Route exact path='/'>
                                 <Dashboard/>

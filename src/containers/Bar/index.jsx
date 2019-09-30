@@ -9,7 +9,9 @@ import { logout } from '../../actions/login-actions'
 
 const styles = (theme) => ({
     root: {
-        zIndex: theme.zIndex.drawer + 1
+        zIndex: theme.zIndex.drawer + 1,
+        marginLeft: 240,
+        width: `calc(100% - 167px)`,
     },
     logout: {
         marginLeft: 'auto'
