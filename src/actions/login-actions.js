@@ -1,5 +1,5 @@
 import { post } from '../service/api'
-import { LOGIN_FAIL, LOGIN_SUCCESS } from './action-types'
+import { LOGIN_FAIL, LOGIN_SUCCESS, LOGOUT } from './action-types'
 import moment from 'moment'
 
 export function successLogin() {
@@ -75,5 +75,16 @@ export function checkAuth() {
 
             return JSON.parse(jsonPayload);
         }
+    }
+}
+
+export function logout() {
+    return dispatch => {
+        localStorage.removeItem('token')
+        localStorage.removeItem('key')
+
+        dispatch({
+            type: LOGOUT
+        })
     }
 }

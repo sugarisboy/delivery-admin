@@ -1,36 +1,43 @@
 import React from 'react'
 import Toolbar from '@material-ui/core/Toolbar'
-import IconButton from '@material-ui/core/IconButton'
-import MenuIcon from '@material-ui/core/SvgIcon/SvgIcon'
 import Typography from '@material-ui/core/Typography'
-import Badge from '@material-ui/core/Badge/Badge'
 import AppBar from '@material-ui/core/AppBar/AppBar'
-import NotificationsIcon from '@material-ui/icons/Notifications'
+import Button from '@material-ui/core/Button'
+import { withStyles } from '@material-ui/core'
+import { connect } from 'react-redux'
+import { logout } from '../../actions/login-actions'
+
+const styles = (theme) => ({
+    root: {
+        zIndex: theme.zIndex.drawer + 1
+    },
+    logout: {
+        marginLeft: 'auto'
+    }
+})
 
 class Bar extends React.PureComponent {
+
     render() {
+        const {classes} = this.props
+
         return (
-            <AppBar position="absolute">
+            <AppBar position="fixed" className={classes.root}>
                 <Toolbar>
-                    <IconButton
-                        edge="start"
-                        color="inherit"
-                        aria-label="open drawer"
-                    >
-                        <MenuIcon />
-                    </IconButton>
                     <Typography component="h1" variant="h6" color="inherit" noWrap>
-                        Dashboard
+                        Qwik
                     </Typography>
-                    <IconButton color="inherit">
-                        <Badge badgeContent={4} color="secondary">
-                            <NotificationsIcon />
-                        </Badge>
-                    </IconButton>
+                    <Button className={classes.logout} color="inherit" onClick={() => this.props.logout()}>
+                        Logout
+                    </Button>
                 </Toolbar>
             </AppBar>
         )
     }
 }
 
-export default Bar
+const mapDispatchToProps = (dispatch) => ({
+  logout: () => dispatch(logout())
+})
+
+export default connect(null, mapDispatchToProps)(withStyles(styles)(Bar))

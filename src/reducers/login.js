@@ -1,4 +1,4 @@
-import { LOGIN_FAIL, LOGIN_SUCCESS } from '../actions/action-types'
+import { LOGIN_FAIL, LOGIN_SUCCESS, LOGOUT } from '../actions/action-types'
 
 const defaultState = {
     isLoggedIn: false,
@@ -19,6 +19,12 @@ export default (state = defaultState, action) => {
                 ...state,
                 isLoggedIn: true
             }
+        case LOGOUT: {
+            return {
+                ...state,
+                isLoggedIn: false
+            }
+        }
         default:
             return {...state}
     }
