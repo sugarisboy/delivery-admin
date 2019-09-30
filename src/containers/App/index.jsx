@@ -15,7 +15,7 @@ class App extends React.Component {
     render() {
 
         return (
-            <BrowserRouter>
+            <BrowserRouter basename="/admin">
                 <React.Fragment>
                     { this.props.isLoggedIn ? <AdminPanel/> : <LoginPage/> }
                 </React.Fragment>
