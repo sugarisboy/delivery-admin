@@ -59,6 +59,7 @@ class MainMenu extends React.PureComponent {
                             {item.icon}
                         </ListItemIcon>
                         <ListItemText primary={item.title}/>
+
                     </ListItem>
                 ))}
             </div>

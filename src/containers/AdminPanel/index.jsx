@@ -7,6 +7,13 @@ import Dashboard from '../Dashboard'
 import DashboardOrders from '../DashboardOrders'
 import Bar from '../Bar'
 import MenuPanel from '../MenuPanel'
+import { withStyles } from '@material-ui/core'
+
+const styles = {
+    root: {
+        display: 'flex'
+    }
+}
 
 class AdminPanel extends React.Component {
 
@@ -35,4 +42,4 @@ class AdminPanel extends React.Component {
 
 }
 
-export default connect()(AdminPanel)
+export default connect()(withStyles(styles)(AdminPanel))
