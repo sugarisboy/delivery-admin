@@ -9,6 +9,7 @@ import DashboardShops from '../DashboardShops'
 import Bar from '../Bar'
 import MenuPanel from '../MenuPanel'
 import { withStyles } from '@material-ui/core'
+import ShopForm from '../ShopForm'
 
 const styles = theme => ({
     root: {
@@ -29,6 +30,26 @@ const styles = theme => ({
 
 class AdminPanel extends React.Component {
 
+    constructor(props) {
+        super(props)
+
+        this.routes = [
+            {
+                path: '/orders',
+                component: DashboardOrders
+            },
+            {
+                path: '/shops',
+                component: DashboardShops
+            },
+            {
+                path: '/newshop',
+                component: ShopForm
+            }
+        ]
+    }
+
+
     render() {
         const {classes} = this.props
 
@@ -44,12 +65,9 @@ class AdminPanel extends React.Component {
                             <Route exact path='/'>
                                 <Dashboard/>
                             </Route>
-                            <Route path='/orders'>
-                                <DashboardOrders/>
-                            </Route>
-                            <Route path='/shops'>
-                                <DashboardShops/>
-                            </Route>
+                            {this.routes.map((route, index) => (
+                                <Route key={index} path={route.path} component={route.component}/>
+                            ))}
                         </Switch>
                     </Container>
                 </main>

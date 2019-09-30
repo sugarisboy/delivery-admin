@@ -6,6 +6,8 @@ import DashboardIcon from '@material-ui/icons/Dashboard'
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart'
 import PeopleIcon from '@material-ui/icons/People'
 import ReceiptIcon from '@material-ui/icons/Receipt'
+import AttachMoneyIcon from '@material-ui/icons/AttachMoney'
+import SettingsIcon from '@material-ui/icons/Settings'
 import { Link } from 'react-router-dom'
 import { withStyles } from '@material-ui/core'
 
@@ -41,12 +43,12 @@ class MainMenu extends React.PureComponent {
             },
             {
                 title: 'Finance',
-                icon: <PeopleIcon/>,
+                icon: <AttachMoneyIcon/>,
                 href: '/partners'
             },
             {
                 title: 'System',
-                icon: <PeopleIcon/>,
+                icon: <SettingsIcon/>,
                 href: '/partners'
             }
         ]
@@ -55,12 +57,12 @@ class MainMenu extends React.PureComponent {
     render() {
         return (
             <div>
-                {this.items.map(item => (
+                {this.items.map((item, index) => (
                     <ListItem button
-                              key={item.title}
-                              component={React.forwardRef((props, ref) => (
-                                  <Link to={item.href} ref={ref} {...props}/>
-                              ))}>
+                              key={index}
+                              component={Link}
+                              to={item.href}
+                    >
                         <ListItemIcon>
                             {item.icon}
                         </ListItemIcon>
