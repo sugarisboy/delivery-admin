@@ -6,8 +6,9 @@ import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import Title from '../Title'
-import { connect } from 'react-redux'
-import { get } from '../../service/api'
+import {connect} from 'react-redux'
+import {post} from '../../service/api'
+import moment from "moment";
 
 class DashboardOrders extends React.Component {
 
@@ -21,7 +22,7 @@ class DashboardOrders extends React.Component {
 
   async componentDidMount() {
     try {
-      const resp = await get('/order/page?pageSize=5&pageNumber=1')
+      const resp = await post('/order/page?size=10&page=1')
       const orders = resp.data.orders
 
       if (orders){
@@ -58,6 +59,7 @@ class DashboardOrders extends React.Component {
                     <TableCell>{order.phone}</TableCell>
                     <TableCell>{order.shopId}</TableCell>
                     <TableCell>{order.createdTime}</TableCell>
+                    <TableCell>{moment(order.createdTime).format("DD/MM/YYYY HH:MM:ss")}</TableCell>
                     <TableCell align="right">{order.address}</TableCell>
                   </TableRow>
               ))}

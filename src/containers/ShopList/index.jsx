@@ -6,7 +6,7 @@ import TableRow from '@material-ui/core/TableRow'
 import TableCell from '@material-ui/core/TableCell'
 import TableBody from '@material-ui/core/TableBody'
 import Link from '@material-ui/core/Link'
-import { get } from '../../service/api'
+import {post} from '../../service/api'
 
 class ShopList extends React.Component {
 
@@ -20,7 +20,7 @@ class ShopList extends React.Component {
 
     async componentDidMount() {
         try {
-            const resp = await get('/shop/page?pageSize=5&pageNumber=1')
+            const resp = await post('/shop/page?pageSize=5&pageNumber=1')
             const shops = resp.data.shops
 
             if (shops) {
