@@ -1,3 +1,5 @@
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS'
 export const LOGIN_FAIL = 'LOGIN_FAIL'
 export const LOGOUT = 'LOGOUT'
+export const ORDERS_SUCCESS_NEXT = 'ORDERS_SUCCESS_NEXT'
+export const ORDERS_FAIL_NEXT = 'ORDERS_FAIL_NEXT'

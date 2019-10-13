@@ -1,5 +1,4 @@
 import React from 'react'
-import Link from '@material-ui/core/Link'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
@@ -9,14 +8,15 @@ import Title from '../Title'
 import {connect} from 'react-redux'
 import {post} from '../../service/api'
 import moment from "moment";
+import {next} from "../../actions/orders-actions";
 
 class DashboardOrders extends React.Component {
 
   constructor(props) {
     super(props)
-
     this.state = {
-      orders: []
+      orders: [],
+      currentPage: 1
     }
   }
 
@@ -24,10 +24,12 @@ class DashboardOrders extends React.Component {
     try {
       const resp = await post('/order/page?size=10&page=1')
       const orders = resp.data.orders
+      const currentPage = resp.data.currentPage
 
       if (orders){
         this.setState({
-          orders: orders
+          orders: orders,
+          currentPage: currentPage
         })
       }
     } catch (e) {
@@ -35,6 +37,11 @@ class DashboardOrders extends React.Component {
     }
   }
 
+  nextPage(e) {
+    e.preventDefault()
+    const {currentPage} = this.state
+    this.props.next(currentPage)
+  }
 
   render() {
     return (
@@ -58,7 +65,6 @@ class DashboardOrders extends React.Component {
                     <TableCell>{order.name}</TableCell>
                     <TableCell>{order.phone}</TableCell>
                     <TableCell>{order.shopId}</TableCell>
-                    <TableCell>{order.createdTime}</TableCell>
                     <TableCell>{moment(order.createdTime).format("DD/MM/YYYY HH:MM:ss")}</TableCell>
                     <TableCell align="right">{order.address}</TableCell>
                   </TableRow>
@@ -66,9 +72,9 @@ class DashboardOrders extends React.Component {
             </TableBody>
           </Table>
           <div>
-            <Link color="primary" href="#">
+            <button onClick={this.nextPage.bind(this)}>
               See more orders
-            </Link>
+            </button>
           </div>
         </React.Fragment>
     );
@@ -76,4 +82,16 @@ class DashboardOrders extends React.Component {
 
 }
 
-export default connect()(DashboardOrders)
+function mapStateToProps(state) {
+  return {
+    orders: state.orders
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    next: (currentPage) => dispatch(next(currentPage))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(DashboardOrders)

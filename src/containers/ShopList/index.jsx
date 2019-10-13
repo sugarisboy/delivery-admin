@@ -18,6 +18,7 @@ class ShopList extends React.Component {
         }
     }
 
+
     async componentDidMount() {
         try {
             const resp = await post('/shop/page?pageSize=5&pageNumber=1')
