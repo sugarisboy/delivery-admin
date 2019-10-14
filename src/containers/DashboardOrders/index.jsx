@@ -8,7 +8,7 @@ import Title from '../Title'
 import {connect} from 'react-redux'
 import {post} from '../../service/api'
 import moment from "moment";
-import {next} from "../../actions/orders-actions";
+import Button from "@material-ui/core/Button";
 
 class DashboardOrders extends React.Component {
 
@@ -16,20 +16,29 @@ class DashboardOrders extends React.Component {
     super(props)
     this.state = {
       orders: [],
-      currentPage: 1
+      currentPage: -1,
+      isAllOrders: false
     }
   }
 
   async componentDidMount() {
-    try {
-      const resp = await post('/order/page?size=10&page=1')
-      const orders = resp.data.orders
-      const currentPage = resp.data.currentPage
+    this.upload()
+  }
 
-      if (orders){
+  async upload() {
+    var {currentPage} = this.state
+
+    try {
+      const nextPage = (currentPage + 1)
+      const resp = await post('/order/page?size=25&page=' + nextPage)
+      const {orders, lastPage} = resp.data
+      currentPage = resp.data.currentPage
+
+      if (orders) {
         this.setState({
-          orders: orders,
-          currentPage: currentPage
+          orders: this.state.orders.concat(orders),
+          currentPage: currentPage,
+          isAllOrders: currentPage + 1 >= lastPage
         })
       }
     } catch (e) {
@@ -39,8 +48,7 @@ class DashboardOrders extends React.Component {
 
   nextPage(e) {
     e.preventDefault()
-    const {currentPage} = this.state
-    this.props.next(currentPage)
+    this.upload()
   }
 
   render() {
@@ -72,9 +80,15 @@ class DashboardOrders extends React.Component {
             </TableBody>
           </Table>
           <div>
-            <button onClick={this.nextPage.bind(this)}>
-              See more orders
-            </button>
+            { this.state.isAllOrders ? null :
+                <Button
+                    color="primary"
+                    variant="contained"
+                    onClick={this.nextPage.bind(this)}
+                >
+                  See more orders
+                </Button>
+            }
           </div>
         </React.Fragment>
     );
@@ -82,16 +96,4 @@ class DashboardOrders extends React.Component {
 
 }
 
-function mapStateToProps(state) {
-  return {
-    orders: state.orders
-  }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    next: (currentPage) => dispatch(next(currentPage))
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(DashboardOrders)
+export default connect()(DashboardOrders)
