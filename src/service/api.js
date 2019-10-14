@@ -1,6 +1,4 @@
 import axios from 'axios'
-import moment from 'moment'
-import { failLogin, successLogin } from '../actions/login-actions'
 
 const API_URL = 'http://localhost:8080'
 

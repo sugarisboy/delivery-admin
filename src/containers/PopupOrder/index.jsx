@@ -1,52 +1,19 @@
-import React from 'react';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import {Link} from "react-router-dom";
+import React from 'react'
+import Button from '@material-ui/core/Button'
+import TextField from '@material-ui/core/TextField'
+import Dialog from '@material-ui/core/Dialog'
+import DialogActions from '@material-ui/core/DialogActions'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogContentText from '@material-ui/core/DialogContentText'
+import DialogTitle from '@material-ui/core/DialogTitle'
+import { Link } from 'react-router-dom'
 
-class PopupOrder extends React.Component {
-
-    constructor(props) {
-        super(props)
-        this.state = {
-            open: false
-        }
-    }
-
-    handleClickOpen = () => {
-        this.setOpen(true);
-    };
-
-    handleClose = () => {
-        this.setOpen(false);
-    };
-
-    handleSave = () => {
-        this.setOpen(false);
-    }
-
-    setOpen = (a) => {
-        this.setState({
-            open: a
-        })
-    }
+class OrderEditPopup extends React.Component {
 
     render() {
         return (
             <div>
-                <Button variant="outlined"
-                        color="primary"
-                        component={Link}
-                        to={'/orders/edit/' + order.id}
-                        onClick={this.handleClickOpen}
-                >
-                    Display
-                </Button>
-                <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
+                <Dialog open={true} aria-labelledby="form-dialog-title">
                     <DialogTitle id="form-dialog-title">Subscribe</DialogTitle>
                     <DialogContent>
                         <DialogContentText>
@@ -63,10 +30,10 @@ class PopupOrder extends React.Component {
                         />
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={this.handleClose} color="primary">
+                        <Button color="primary" component={Link} to={`/orders`}>
                             Cancel
                         </Button>
-                        <Button onClick={this.handleSave} color="primary">
+                        <Button color="primary" component={Link} to={`/orders`}>
                             Save
                         </Button>
                     </DialogActions>
@@ -77,4 +44,4 @@ class PopupOrder extends React.Component {
 
 }
 
-export default PopupOrder
+export default OrderEditPopup

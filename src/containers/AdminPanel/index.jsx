@@ -10,7 +10,6 @@ import Bar from '../Bar'
 import MenuPanel from '../MenuPanel'
 import { withStyles } from '@material-ui/core'
 import ShopForm from '../ShopForm'
-import PopupOrder from '../PopupOrder'
 
 const styles = theme => ({
     root: {

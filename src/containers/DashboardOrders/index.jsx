@@ -5,12 +5,13 @@ import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import Title from '../Title'
-import {connect} from 'react-redux'
-import {post} from '../../service/api'
-import moment from "moment";
-import Button from "@material-ui/core/Button";
-import PopupOrder from "../PopupOrder";
-import {Link} from "react-router-dom";
+import { connect } from 'react-redux'
+import { post } from '../../service/api'
+import moment from 'moment'
+import Button from '@material-ui/core/Button'
+import { Link } from 'react-router-dom'
+import OrderEditPopup from '../PopupOrder'
+import { Route } from 'react-router-dom'
 
 class DashboardOrders extends React.Component {
 
@@ -18,44 +19,52 @@ class DashboardOrders extends React.Component {
     super(props)
     this.state = {
       orders: [],
-      currentPage: -1,
+      currentPage: 0,
       isAllOrders: false
     }
   }
 
-  async componentDidMount() {
-    this.upload()
+  componentDidMount() {
+    this.loadOrders()
   }
 
-  async upload() {
-    var {currentPage} = this.state
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    const {currentPage} = this.state
 
+    if (prevState.currentPage !== currentPage) {
+      this.loadOrders(currentPage)
+    }
+  }
+
+  async loadOrders(page = 0) {
     try {
-      const nextPage = (currentPage + 1)
-      const resp = await post('/order/page?size=25&page=' + nextPage)
+      const resp = await post('/order/page?size=25&page=' + page)
       const {orders, lastPage} = resp.data
-      currentPage = resp.data.currentPage
 
       if (orders) {
-        this.setState({
-          orders: this.state.orders.concat(orders),
-          currentPage: currentPage,
-          isAllOrders: currentPage + 1 >= lastPage
-        })
+        this.setState((state) => ({
+          orders: state.orders.concat(orders),
+          isAllOrders: state.currentPage + 1 >= lastPage
+        }))
       }
     } catch (e) {
       console.log(e)
     }
   }
 
-  nextPage(e) {
+  async nextPage(e) {
     e.preventDefault()
-    this.upload()
+
+    this.setState((state) => ({
+      currentPage: state.currentPage + 1
+    }))
   }
 
   render() {
+    const {match} = this.props
+
     return (
-        <React.Fragment>
+        <>
           <Title>Recent Orders</Title>
           <Table size="small">
             <TableHead>
@@ -71,7 +80,11 @@ class DashboardOrders extends React.Component {
             <TableBody>
               {this.state.orders && this.state.orders.map(order => (
                   <TableRow key={order.id}>
-                    <TableCell>{order.id}</TableCell>
+                    <TableCell>
+                      <Link to={`${match.url}/edit/${order.id}`}>
+                        {order.id}
+                      </Link>
+                    </TableCell>
                     <TableCell>{order.name}</TableCell>
                     <TableCell>{order.phone}</TableCell>
                     <TableCell>{order.shopId}</TableCell>
@@ -92,7 +105,10 @@ class DashboardOrders extends React.Component {
                 </Button>
             }
           </div>
-        </React.Fragment>
+          <div>
+            <Route path={`${match.url}/edit/:id`} exact component={OrderEditPopup}/>
+          </div>
+        </>
     );
   }
 
