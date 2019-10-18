@@ -7,7 +7,7 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import {Link} from 'react-router-dom'
-import {get} from "../../service/api";
+import {get, patch} from "../../service/api";
 import Loader from "../Loader";
 import {makeStyles} from "@material-ui/core";
 import ExpansionPanel from "@material-ui/core/ExpansionPanel";
@@ -136,12 +136,13 @@ class OrderEditPopup extends React.Component {
                 {isAllowNext ?
                     <ExpansionPanelDetails style={{height: 52}}>
                         <div>
-                            <OrderStatusInfo status={3}/>
+                            <OrderStatusInfo status={this.state.order.localStatus + 1}/>
                         </div>
                         <div style={{textAlign: 'right', marginLeft: 'auto'}}>
                             <Button
                                 color="primary"
                                 style={{marginLeft: 4, marginTop: -8}}
+                                onClick={(e) => this.handleUpdateStatus(e, this.state.order.localStatus + 1)}
                             >
                                 Next status
                             </Button>
@@ -158,6 +159,7 @@ class OrderEditPopup extends React.Component {
                                 <Button
                                     color="primary"
                                     style={{marginLeft: 4, marginTop: -8}}
+                                    onClick={(e) => this.handleUpdateStatus(e, 10)}
                                 >
                                     Done
                                 </Button>
@@ -171,6 +173,7 @@ class OrderEditPopup extends React.Component {
                                 <Button
                                     color="primary"
                                     style={{marginLeft: 4, marginTop: -8}}
+                                    onClick={(e) => this.handleUpdateStatus(e, 12)}
                                 >
                                     Cancel order
                                 </Button>
@@ -215,6 +218,43 @@ class OrderEditPopup extends React.Component {
                 </ExpansionPanelDetails>
             )
         }
+    }
+
+    async handleSave(e) {
+        const data = this.state.order;
+
+        const products = []
+        this.state.products.forEach(product => {
+            products.push({
+                productId: product.id,
+                count: product.count
+            })
+        })
+
+        const req = {
+            id: data.id,
+            products: products,
+            costAndDelivery: data.costAndDelivery
+        }
+
+        const order = await patch('/order/update', req)
+    }
+
+    async handleUpdateStatus(e, status) {
+        const req = {
+            id: this.state.order.id,
+            status: status
+        }
+
+        const {data} = await patch('/order/update', req)
+
+        this.setState({
+            order: {
+                ...this.state.order,
+                localStatus: data.localStatus,
+                status: data.status
+            }
+        })
     }
 
     render() {
@@ -331,7 +371,8 @@ class OrderEditPopup extends React.Component {
                             <Button color="primary" component={Link} to={`/orders`}>
                                 Cancel
                             </Button>
-                            <Button color="primary" component={Link} to={`/orders`}>
+                            <Button onClick={this.handleSave.bind(this)} color="primary" component={Link}
+                                    to={`/orders`}>
                                 Save
                             </Button>
                         </DialogActions>

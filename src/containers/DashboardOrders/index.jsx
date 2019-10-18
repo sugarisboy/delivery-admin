@@ -39,7 +39,7 @@ class DashboardOrders extends React.Component {
 
   async loadOrders(page = 0) {
     try {
-      const resp = await post('/order/page?size=25&page=' + page)
+      const resp = await post('/order/page?size=10&page=' + page)
       const {orders, lastPage} = resp.data
 
       if (orders) {

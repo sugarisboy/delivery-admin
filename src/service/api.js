@@ -8,6 +8,7 @@ function getAuthHeaders() {
 
     if (token && key) {
         return {
+            'Access-Control-Allow-Origin': '*',
             'Authorization': 'Bearer_' + token,
             'Key': key
         }
@@ -22,6 +23,16 @@ export function post(endpoint, data, headers = {}) {
         }
     }
     return axios.post(API_URL + endpoint, data, config)
+}
+
+export function patch(endpoint, data, headers = {}) {
+    const config = {
+        headers: {
+            ...headers,
+            ...getAuthHeaders()
+        }
+    }
+    return axios.patch(API_URL + endpoint, data, config)
 }
 
 export function get(endpoint, headers = {}) {
