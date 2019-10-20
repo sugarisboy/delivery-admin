@@ -10,6 +10,7 @@
     "minireset.css": "^0.0.5",
     "moment": "^2.24.0",
     "react": "^16.8.6",
+    "react-center": "^1.1.1",
     "react-dom": "^16.8.6",
     "react-router": "^5.1.1",
     "react-router-dom": "^5.0.1",
