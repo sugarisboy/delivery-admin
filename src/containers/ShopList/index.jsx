@@ -5,10 +5,11 @@ import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import TableCell from '@material-ui/core/TableCell'
 import TableBody from '@material-ui/core/TableBody'
-import Link from '@material-ui/core/Link'
 import {connect} from "react-redux";
 import {updateTableShops} from "../../actions/shops-action";
 import Button from "@material-ui/core/Button";
+import {Route} from "react-router";
+import ShopCreatePopup from "../ShopCreatePopup";
 
 class ShopList extends React.Component {
 
@@ -39,8 +40,9 @@ class ShopList extends React.Component {
     }
 
     render() {
+
         return (
-            <React.Fragment>
+            <>
                 <Title>Shops</Title>
                 <Table size="small">
                     <TableHead>
@@ -85,7 +87,7 @@ class ShopList extends React.Component {
                         </Button>
                     }
                 </div>
-            </React.Fragment>
+            </>
         )
     }
 }

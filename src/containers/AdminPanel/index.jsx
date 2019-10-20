@@ -41,10 +41,6 @@ class AdminPanel extends React.Component {
             {
                 path: '/shops',
                 component: DashboardShops
-            },
-            {
-                path: '/newshop',
-                component: ShopForm
             }
         ]
     }
