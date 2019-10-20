@@ -6,34 +6,37 @@ import TableRow from '@material-ui/core/TableRow'
 import TableCell from '@material-ui/core/TableCell'
 import TableBody from '@material-ui/core/TableBody'
 import Link from '@material-ui/core/Link'
-import {post} from '../../service/api'
+import {connect} from "react-redux";
+import {updateTableShops} from "../../actions/shops-action";
+import Button from "@material-ui/core/Button";
 
 class ShopList extends React.Component {
 
     constructor(props) {
         super(props)
-
         this.state = {
-            shops: []
+            currentPage: 0
         }
     }
 
+    componentDidMount() {
+        this.props.updateTableShops()
+    }
 
-    async componentDidMount() {
-        try {
-            const resp = await post('/shop/page?pageSize=5&pageNumber=1')
-            const shops = resp.data.shops
+    componentDidUpdate(prevProps, prevState, snapshot) {
 
-            if (shops) {
-                this.setState({
-                    shops: shops
-                })
-            }
-        } catch (e) {
-            console.log(e)
+        const {currentPage} = this.state
+
+        if (prevState.currentPage !== currentPage) {
+            this.props.updateTableShops(currentPage)
         }
     }
 
+    nextPage(e) {
+        this.setState((state) => ({
+            currentPage: state.currentPage + 1
+        }))
+    }
 
     render() {
         return (
@@ -51,7 +54,7 @@ class ShopList extends React.Component {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {this.state.shops && this.state.shops.map(shop => {
+                        {this.props.updatedShops.shops && this.props.updatedShops.shops.map(shop => {
                             const {schedule} = shop
                             const {open, close} = schedule
                             const openTime = `${open[0][0]}:${open[0][1]}`
@@ -71,13 +74,26 @@ class ShopList extends React.Component {
                     </TableBody>
                 </Table>
                 <div>
-                    <Link color="primary" href="#">
-                        See more orders
-                    </Link>
+                    {this.props.updatedShops.isAllShops ? null :
+                        <Button
+                            color="primary"
+                            variant="contained"
+                            onClick={this.nextPage.bind(this)}
+                            style={{margin: 8}}
+                        >
+                            Next page
+                        </Button>
+                    }
                 </div>
             </React.Fragment>
         )
     }
 }
 
-export default ShopList
+const mapStateToProps = (state) => ({
+    updatedShops: state.shops.updatedShops
+})
+
+const mapDispatchToProps = {updateTableShops}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ShopList)

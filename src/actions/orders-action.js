@@ -4,7 +4,7 @@ import {post} from "../service/api";
 export function updateTableOrders(page = 0) {
     return async dispatch => {
         try {
-            const resp = await post('/order/page?size=10&page=' + page)
+            const resp = await post('/order/page?size=25W&page=' + page)
             const {orders, lastPage, currentPage} = resp.data
 
             if (orders) {

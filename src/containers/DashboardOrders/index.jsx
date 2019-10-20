@@ -90,8 +90,9 @@ class DashboardOrders extends React.Component {
                           color="primary"
                           variant="contained"
                           onClick={this.nextPage.bind(this)}
+                          style={{margin: 8}}
                       >
-                        See more orders
+                        Next page
                       </Button>
                   }
                 </div>
