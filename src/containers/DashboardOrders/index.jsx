@@ -6,50 +6,33 @@ import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import Title from '../Title'
 import {connect} from 'react-redux'
-import {post} from '../../service/api'
 import moment from 'moment'
 import Button from '@material-ui/core/Button'
 import {Link, Route} from 'react-router-dom'
 import OrderEditPopup from '../PopupOrder'
 import Loader from "../Loader";
 import OrderStatusInfo from "../OrderStatusInfo/OrderStatusInfo";
+import {updateTableOrders} from "../../actions/orders-action";
 
 class DashboardOrders extends React.Component {
 
   constructor(props) {
     super(props)
     this.state = {
-      orders: [],
-      currentPage: 0,
-      isAllOrders: false
+      currentPage: 0
     }
   }
 
   componentDidMount() {
-    this.loadOrders()
+    this.props.updateTableOrders()
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
+
     const {currentPage} = this.state
 
     if (prevState.currentPage !== currentPage) {
-      this.loadOrders(currentPage)
-    }
-  }
-
-  async loadOrders(page = 0) {
-    try {
-      const resp = await post('/order/page?size=10&page=' + page)
-      const {orders, lastPage} = resp.data
-
-      if (orders) {
-        this.setState((state) => ({
-          orders: state.orders.concat(orders),
-          isAllOrders: state.currentPage + 1 >= lastPage
-        }))
-      }
-    } catch (e) {
-      console.log(e)
+      this.props.updateTableOrders(currentPage)
     }
   }
 
@@ -67,7 +50,7 @@ class DashboardOrders extends React.Component {
     return (
         <>
           <Title>Recent Orders</Title>
-          {this.state.orders.length === 0 && !this.state.isAllOrders ?
+          {this.props.updatedOrders.orders.length === 0 && !this.props.updatedOrders.isAllOrders ?
               <Loader/>
               :
               <>
@@ -84,7 +67,7 @@ class DashboardOrders extends React.Component {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {this.state.orders && this.state.orders.map(order => (
+                    {this.props.updatedOrders.orders && this.props.updatedOrders.orders.map(order => (
                         <TableRow key={order.id}>
                           <TableCell>
                             <Link to={`${match.url}/edit/${order.id}`}>
@@ -102,7 +85,7 @@ class DashboardOrders extends React.Component {
                   </TableBody>
                 </Table>
                 <div>
-                  {this.state.isAllOrders ? null :
+                  {this.props.updatedOrders.isAllOrders ? null :
                       <Button
                           color="primary"
                           variant="contained"
@@ -120,7 +103,12 @@ class DashboardOrders extends React.Component {
         </>
     );
   }
-
 }
 
-export default connect()(DashboardOrders)
+const mapStateToProps = (state) => ({
+  updatedOrders: state.orders.updatedOrders
+})
+
+const mapDispatchToProps = {updateTableOrders}
+
+export default connect(mapStateToProps, mapDispatchToProps)(DashboardOrders)

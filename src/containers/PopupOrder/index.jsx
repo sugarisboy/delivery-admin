@@ -17,6 +17,8 @@ import Typography from "@material-ui/core/Typography";
 import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
 import OrderStatusInfo from "../OrderStatusInfo/OrderStatusInfo";
 import moment from "moment";
+import {updateTableOrders} from "../../actions/orders-action";
+import {connect} from "react-redux";
 
 class OrderEditPopup extends React.Component {
 
@@ -221,7 +223,7 @@ class OrderEditPopup extends React.Component {
     }
 
     async handleSave(e) {
-        const data = this.state.order;
+        const order = this.state.order;
 
         const products = []
         this.state.products.forEach(product => {
@@ -232,12 +234,12 @@ class OrderEditPopup extends React.Component {
         })
 
         const req = {
-            id: data.id,
+            id: order.id,
             products: products,
-            costAndDelivery: data.costAndDelivery
+            costAndDelivery: order.costAndDelivery
         }
 
-        const order = await patch('/order/update', req)
+        const {data} = await patch('/order/update', req)
     }
 
     async handleUpdateStatus(e, status) {
@@ -255,6 +257,7 @@ class OrderEditPopup extends React.Component {
                 status: data.status
             }
         })
+        this.props.setTableOrders(this.state.order)
     }
 
     render() {
@@ -389,4 +392,8 @@ class OrderEditPopup extends React.Component {
 
 }
 
-export default OrderEditPopup
+const mapDispatchToProps = dispatch => ({
+    setTableOrders: () => dispatch(updateTableOrders())
+})
+
+export default connect(null, mapDispatchToProps)(OrderEditPopup)
