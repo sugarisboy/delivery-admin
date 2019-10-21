@@ -12,6 +12,7 @@ import {withStyles} from '@material-ui/core'
 import DashboardProducts from "../DashboardProducts";
 import ProductCreateForm from "../ProductCreateForm";
 import ProductEditForm from "../ProductEditForm";
+import ShopPage from '../ShopMap'
 
 const styles = theme => ({
     root: {
@@ -55,6 +56,10 @@ class AdminPanel extends React.Component {
             {
                 path: '/product/:productId/edit',
                 component: ProductEditForm
+            },
+            {
+                path: '/shops/edit',
+                component: ShopPage
             }
         ]
     }
