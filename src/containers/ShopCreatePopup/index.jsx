@@ -16,6 +16,7 @@ import {isEmpty} from "../../service/utils";
 import Search from "../Search";
 import {connect} from "react-redux";
 import {setShopCityId} from "../../actions/shops-action";
+import {addSnackbarEntry} from "../../actions/snackbars-action";
 
 class ShopCreatePopup extends React.Component {
 
@@ -147,8 +148,6 @@ class ShopCreatePopup extends React.Component {
 
         return (
             <div>
-
-
                 <Dialog open={true} aria-labelledby="form-dialog-title">
                     <DialogTitle id="form-dialog-title">Create partner and shop</DialogTitle>
                     <DialogContent>
@@ -224,7 +223,6 @@ class ShopCreatePopup extends React.Component {
                             <div>
                                 <Search/>
                             </div>
-
                         </div>
 
                     </DialogContent>
@@ -236,7 +234,6 @@ class ShopCreatePopup extends React.Component {
                             Create
                         </Button>
                     </DialogActions>
-
                 </Dialog>
             </div>
         );
@@ -249,7 +246,8 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = {
-    setShopCityId
+    setShopCityId,
+    addSnackbarEntry
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopCreatePopup)

@@ -46,7 +46,7 @@ class Search extends React.Component {
     }
 
     loadOptions = async (val) => {
-        const res = await get(`/map/ac${val}`)
+        const res = await get(`/map/ac/${val}`)
         const {suggestions} = res.data
         // const filtered = suggestions.filter(s => (s.address.street && s.address.houseNumber))
         return suggestions.map(s => ({

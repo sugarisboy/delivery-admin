@@ -1,9 +1,10 @@
 import React from 'react'
 import LoginPage from '../LoginPage'
 import AdminPanel from '../AdminPanel'
-import { connect } from 'react-redux'
-import { checkAuth } from '../../actions/login-actions'
-import { BrowserRouter } from 'react-router-dom'
+import {connect} from 'react-redux'
+import {checkAuth} from '../../actions/login-actions'
+import {BrowserRouter} from 'react-router-dom'
+import SnackbarTree from "../SnackbarTree";
 
 class App extends React.Component {
 
@@ -18,6 +19,7 @@ class App extends React.Component {
             <BrowserRouter basename="/admin">
                 <React.Fragment>
                     { this.props.isLoggedIn ? <AdminPanel/> : <LoginPage/> }
+                    <SnackbarTree/>
                 </React.Fragment>
             </BrowserRouter>
         )
