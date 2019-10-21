@@ -11,7 +11,11 @@ import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import {makeStyles} from "@material-ui/core";
-import {get} from "../../service/api";
+import {get, post} from "../../service/api";
+import {isEmpty} from "../../service/utils";
+import Search from "../Search";
+import {connect} from "react-redux";
+import {setShopCityId} from "../../actions/shops-action";
 
 class ShopCreatePopup extends React.Component {
 
@@ -19,12 +23,11 @@ class ShopCreatePopup extends React.Component {
         super(props)
         this.state = {
             error: [],
-            email: "",
-            password: "",
-            shopName: "",
-            shopAddress: "",
-            cityId: "",
-            cities: []
+            email: '',
+            password: '',
+            shopName: '',
+            cities: [],
+            autocomplete: []
         }
 
         this.loadCities()
@@ -46,10 +49,7 @@ class ShopCreatePopup extends React.Component {
     }
 
     handleCityChange(e) {
-        this.setState({
-            ...this.state,
-            cityId: e.target.value
-        })
+        this.props.setShopCityId(e.target.value)
     }
 
     handleFieldChange(e, type) {
@@ -72,34 +72,27 @@ class ShopCreatePopup extends React.Component {
                     shopName: e.target.value
                 })
                 break
-            case 'address':
-                this.setState({
-                    ...this.state,
-                    shopAddress: e.target.value
-                })
-                break
         }
     }
 
-    handleSave(e) {
+    async handleSave(e) {
         const error = []
-        const {email, password, shopName, shopAddress, cityId} = this.state
+        const {email, password, shopName, cityId} = this.state
 
-        if (email === '' || !email.match(/^[ ]*([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})[ ]*$/))
+        if (isEmpty(email) === '' || !email.match(/^[ ]*([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})[ ]*$/))
             error.push('email')
 
-        if (password === '')
+        if (isEmpty(password))
             error.push('password')
 
-        if (shopName === '')
+        if (isEmpty(shopName))
             error.push('title')
 
-        if (shopAddress === '')
-            error.push('address')
-
-        if (cityId === '')
+        if (this.props.shopCityId === '')
             error.push('city')
 
+        if (isEmpty(this.props.shopAddress))
+            error.push('address')
 
         if (error.length !== 0) {
             e.preventDefault()
@@ -109,8 +102,22 @@ class ShopCreatePopup extends React.Component {
             })
         } else {
 
-            console.log('save', this.state)
+            const regData = await post('/auth/register', {
+                email: email,
+                name: shopName,
+                password: password,
+                repeatPassword: password
+            })
 
+            const userId = regData.data.id
+            const partnerData = await post('/partner/creat/' + userId)
+
+            const shopData = await post('/shop/create', {
+                name: shopName,
+                address: this.props.shopAddress,
+                cityId: this.props.shopCityId,
+                partnerId: userId
+            })
         }
     }
 
@@ -140,66 +147,39 @@ class ShopCreatePopup extends React.Component {
 
         return (
             <div>
+
+
                 <Dialog open={true} aria-labelledby="form-dialog-title">
                     <DialogTitle id="form-dialog-title">Create partner and shop</DialogTitle>
                     <DialogContent>
-
                         <div>
                             <h3>Partner details:</h3>
                             <div>
-                                {
-                                    this.state.error.includes('email') ?
-                                        (
-                                            <TextField
-                                                error
-                                                id="email"
-                                                label="Email"
-                                                value={this.state.email}
-                                                style={{margin: 8, width: '90%'}}
-                                                onChange={(e => this.handleFieldChange(e, 'email'))}
-                                            />
-                                        )
-                                        :
-                                        (
-                                            <TextField
-                                                id="email"
-                                                label="Email"
-                                                value={this.state.email}
-                                                style={{margin: 8, width: '90%'}}
-                                                onChange={(e => this.handleFieldChange(e, 'email'))}
-                                            />
-                                        )
-                                }
+                                <TextField
+                                    error={this.state.error.includes('email')}
+                                    fullWidth
+                                    id="email"
+                                    label="Email"
+                                    value={this.state.email}
+                                    style={{margin: 8, paddingRight: '10px'}}
+                                    onChange={(e => this.handleFieldChange(e, 'email'))}
+                                />
                             </div>
 
-                            <div>
-                                {
-                                    this.state.error.includes('password') ?
-                                        (
-                                            <TextField
-                                                error
-                                                id="password"
-                                                label="Password"
-                                                value={this.state.password}
-                                                style={{margin: 8, width: '50%'}}
-                                                onChange={(e => this.handleFieldChange(e, 'password'))}
-                                            />
-                                        )
-                                        :
-                                        (
-                                            <TextField
-                                                id="password"
-                                                label="Password"
-                                                value={this.state.password}
-                                                style={{margin: 8, width: '50%'}}
-                                                onChange={(e => this.handleFieldChange(e, 'password'))}
-                                            />
-                                        )
-                                }
+                            <div style={{display: 'flex', flexDirection: 'row'}}>
+                                <TextField
+                                    error={this.state.error.includes('password')}
+                                    id="password"
+                                    label="Password"
+                                    fullWidth
+                                    value={this.state.password}
+                                    style={{margin: 8}}
+                                    onChange={(e => this.handleFieldChange(e, 'password'))}
+                                />
                                 <Button
                                     color="primary"
                                     variant="contained"
-                                    style={{margin: 8}}
+                                    style={{margin: 8, width: '120px'}}
                                     onClick={this.handleGeneratePassword.bind(this)}
                                 >
                                     Generate
@@ -211,91 +191,40 @@ class ShopCreatePopup extends React.Component {
                         <div>
                             <h3>Shop details:</h3>
                             <div>
-                                {
-                                    this.state.error.includes('title') ?
-                                        (
-                                            <TextField
-                                                error
-                                                id="title"
-                                                label="Title"
-                                                value={this.state.shopName}
-                                                style={{margin: 8, width: '90%'}}
-                                                onChange={(e => this.handleFieldChange(e, 'title'))}
-                                            />
-                                        )
-                                        :
-                                        (
-                                            <TextField
-                                                id="title"
-                                                label="Title"
-                                                value={this.state.shopName}
-                                                style={{margin: 8, width: '90%'}}
-                                                onChange={(e => this.handleFieldChange(e, 'title'))}
-                                            />
-                                        )
-                                }
+                                <TextField
+                                    error={this.state.error.includes('title')}
+                                    id="title"
+                                    label="Title"
+                                    value={this.state.shopName}
+                                    fullWidth
+                                    style={{margin: 8, paddingRight: '10px'}}
+                                    onChange={(e => this.handleFieldChange(e, 'title'))}
+                                />
                             </div>
 
                             <div>
-                                {
-                                    this.state.error.includes('city') ?
-                                        (
-                                            <FormControl className={classes.formControl} style={{margin: 8, width: '90%'}} error>
-                                                <InputLabel htmlFor="city">City</InputLabel>
-                                                <Select
-                                                    value={this.state.cityId}
-                                                    onChange={this.handleCityChange.bind(this)}
-                                                >
-                                                    {
-                                                        this.state.cities.map(city => <MenuItem key={city.id}
-                                                                                                value={city.id}>{city.name}</MenuItem>)
-                                                    }
-                                                </Select>
-                                            </FormControl>
-                                        )
-                                        :
-                                        (
-                                            <FormControl className={classes.formControl} style={{margin: 8, width: '90%'}}>
-                                                <InputLabel htmlFor="city">City</InputLabel>
-                                                <Select
-                                                    value={this.state.cityId}
-                                                    onChange={this.handleCityChange.bind(this)}
-                                                >
-                                                    {
-                                                        this.state.cities.map(city => <MenuItem key={city.id}
-                                                                                                value={city.id}>{city.name}</MenuItem>)
-                                                    }
-                                                </Select>
-                                            </FormControl>
-                                        )
-                                }
+                                <FormControl
+                                    className={classes.formControl}
+                                    fullWidth
+                                    style={{margin: 8, paddingRight: '10px'}}
+                                    error={this.state.error.includes('city')}
+                                >
+                                    <InputLabel htmlFor="city">City</InputLabel>
+                                    <Select value={this.props.shopCityId} onChange={this.handleCityChange.bind(this)}>
+                                        {
+                                            this.state.cities.map(city =>
+                                                <MenuItem key={city.id} value={city.id}>
+                                                    {city.name}
+                                                </MenuItem>)
+                                        }
+                                    </Select>
+                                </FormControl>
                             </div>
 
                             <div>
-                                {
-                                    this.state.error.includes('address') ?
-                                        (
-                                            <TextField
-                                                error
-                                                id="address"
-                                                label="Address"
-                                                value={this.state.shopAddress}
-                                                style={{margin: 8, width: '90%'}}
-                                                onChange={(e => this.handleFieldChange(e, 'address'))}
-                                            />
-                                        )
-                                        :
-                                        (
-                                            <TextField
-                                                id="address"
-                                                label="Address"
-                                                value={this.state.shopAddress}
-                                                style={{margin: 8, width: '90%'}}
-                                                onChange={(e => this.handleFieldChange(e, 'address'))}
-                                            />
-                                        )
-                                }
+                                <Search/>
                             </div>
+
                         </div>
 
                     </DialogContent>
@@ -314,4 +243,13 @@ class ShopCreatePopup extends React.Component {
     }
 }
 
-export default ShopCreatePopup
+const mapStateToProps = (state) => ({
+    shopAddress: state.shops.shopAddress,
+    shopCityId: state.shops.shopCityId
+})
+
+const mapDispatchToProps = {
+    setShopCityId
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ShopCreatePopup)

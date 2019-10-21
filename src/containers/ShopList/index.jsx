@@ -8,8 +8,6 @@ import TableBody from '@material-ui/core/TableBody'
 import {connect} from "react-redux";
 import {updateTableShops} from "../../actions/shops-action";
 import Button from "@material-ui/core/Button";
-import {Route} from "react-router";
-import ShopCreatePopup from "../ShopCreatePopup";
 
 class ShopList extends React.Component {
 

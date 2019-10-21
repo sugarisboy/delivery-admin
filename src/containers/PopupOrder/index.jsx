@@ -243,21 +243,24 @@ class OrderEditPopup extends React.Component {
     }
 
     async handleUpdateStatus(e, status) {
-        const req = {
-            id: this.state.order.id,
-            status: status
-        }
+        if (window.confirm('You are sure?')) {
 
-        const {data} = await patch('/order/update', req)
-
-        this.setState({
-            order: {
-                ...this.state.order,
-                localStatus: data.localStatus,
-                status: data.status
+            const req = {
+                id: this.state.order.id,
+                status: status
             }
-        })
-        this.props.setTableOrders(this.state.order)
+
+            const {data} = await patch('/order/update', req)
+
+            this.setState({
+                order: {
+                    ...this.state.order,
+                    localStatus: data.localStatus,
+                    status: data.status
+                }
+            })
+            this.props.setTableOrders(this.state.order)
+        }
     }
 
     render() {
