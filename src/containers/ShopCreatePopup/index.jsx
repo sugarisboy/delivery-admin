@@ -78,7 +78,7 @@ class ShopCreatePopup extends React.Component {
 
     async handleSave(e) {
         const error = []
-        const {email, password, shopName, cityId} = this.state
+        const {email, password, shopName} = this.state
 
         if (isEmpty(email) === '' || !email.match(/^[ ]*([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})[ ]*$/))
             error.push('email')
@@ -103,21 +103,33 @@ class ShopCreatePopup extends React.Component {
             })
         } else {
 
-            const regData = await post('/auth/register', {
+            // Register user
+            const userId = await post('/auth/register', {
                 email: email,
                 name: shopName,
                 password: password,
                 repeatPassword: password
+            }).then(async regData => {
+                this.props.addSnackbarEntry('success', 'Register new user, id: ' + regData.data.id)
+                return regData.data.id;
+            }).catch(async error => {
+                console.log(error.response)
+                this.props.addSnackbarEntry('warning', 'User already created')
+                const {data} = await get('/user/email/' + email)
+                return data.id
             })
 
-            const userId = regData.data.id
-            const partnerData = await post('/partner/creat/' + userId)
-
-            const shopData = await post('/shop/create', {
+            // Set registered user to partner
+            await post('/partner/create/' + userId)
+            await post('/shop/create', {
                 name: shopName,
                 address: this.props.shopAddress,
                 cityId: this.props.shopCityId,
                 partnerId: userId
+            }).then(response => {
+                this.props.addSnackbarEntry('success', 'Shop was create, id: ' + response.data.id)
+            }).catch(error => {
+                this.props.addSnackbarEntry('error', error.response.data.message)
             })
         }
     }
