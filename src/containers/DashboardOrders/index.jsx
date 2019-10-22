@@ -36,12 +36,13 @@ class DashboardOrders extends React.Component {
     }
   }
 
-  async nextPage(e) {
-    e.preventDefault()
-
-    this.setState((state) => ({
-      currentPage: state.currentPage + 1
-    }))
+  handleChangePage(e, next) {
+    const {currentPage} = this.state
+    const listedTo = currentPage + (next ? +1 : -1)
+    this.setState({
+      ...this.state,
+      currentPage: listedTo
+    })
   }
 
   render() {
@@ -84,18 +85,29 @@ class DashboardOrders extends React.Component {
                     ))}
                   </TableBody>
                 </Table>
-                <div>
-                  {this.props.updatedOrders.isAllOrders ? null :
-                      <Button
-                          color="primary"
-                          variant="contained"
-                          onClick={this.nextPage.bind(this)}
-                          style={{margin: 8}}
-                      >
-                        Next page
-                      </Button>
-                  }
+
+                <div style={{display: 'block', float: 'right'}}>
+                  <Button
+                      disabled={this.state.currentPage < 1}
+                      color="primary"
+                      variant="contained"
+                      onClick={e => this.handleChangePage(e, false)}
+                      style={{margin: 8}}
+                  >
+                    Previous page
+                  </Button>
+
+                  <Button
+                      disabled={this.props.updatedOrders.isAllOrders}
+                      color="primary"
+                      variant="contained"
+                      onClick={e => this.handleChangePage(e, true)}
+                      style={{margin: 8}}
+                  >
+                    Next page
+                  </Button>
                 </div>
+
                 <div>
                   <Route path={`${match.url}/edit/:id`} exact component={OrderEditPopup}/>
                 </div>

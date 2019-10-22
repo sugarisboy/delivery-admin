@@ -8,6 +8,10 @@ import TableBody from '@material-ui/core/TableBody'
 import {connect} from "react-redux";
 import {updateTableShops} from "../../actions/shops-action";
 import Button from "@material-ui/core/Button";
+import IconButton from "@material-ui/core/IconButton";
+import SvgIcon from "@material-ui/core/SvgIcon/SvgIcon";
+import ArchiveIcon from '@material-ui/icons/Archive';
+import {Link} from "react-router-dom";
 
 class ShopList extends React.Component {
 
@@ -31,10 +35,13 @@ class ShopList extends React.Component {
         }
     }
 
-    nextPage(e) {
-        this.setState((state) => ({
-            currentPage: state.currentPage + 1
-        }))
+    handleChangePage(e, next) {
+        const {currentPage} = this.state
+        const listedTo = currentPage + (next ? +1 : -1)
+        this.setState({
+            ...this.state,
+            currentPage: listedTo
+        })
     }
 
     render() {
@@ -51,6 +58,7 @@ class ShopList extends React.Component {
                             <TableCell>Open time</TableCell>
                             <TableCell>Close time</TableCell>
                             <TableCell align="right">Address</TableCell>
+                            <TableCell/>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -67,23 +75,38 @@ class ShopList extends React.Component {
                                     <TableCell>{shop.description}</TableCell>
                                     <TableCell>{openTime}</TableCell>
                                     <TableCell>{closeTime}</TableCell>
-                                    <TableCell align="right">N/A</TableCell>
+                                    <TableCell align="right">{shop.address}</TableCell>
+                                    <TableCell>
+                                        <Button component={Link} to={'/shop/' + shop.id + '/products'}>
+                                            <ArchiveIcon fontSize="small"/>
+                                        </Button>
+                                    </TableCell>
                                 </TableRow>
                             )
                         })}
                     </TableBody>
                 </Table>
-                <div>
-                    {this.props.updatedShops.isAllShops ? null :
-                        <Button
-                            color="primary"
-                            variant="contained"
-                            onClick={this.nextPage.bind(this)}
-                            style={{margin: 8}}
-                        >
-                            Next page
-                        </Button>
-                    }
+
+                <div style={{display: 'block', float: 'right'}}>
+                    <Button
+                        disabled={this.state.currentPage < 1}
+                        color="primary"
+                        variant="contained"
+                        onClick={e => this.handleChangePage(e, false)}
+                        style={{margin: 8}}
+                    >
+                        Previous page
+                    </Button>
+
+                    <Button
+                        disabled={this.props.updatedShops.isAllShops}
+                        color="primary"
+                        variant="contained"
+                        onClick={e => this.handleChangePage(e, true)}
+                        style={{margin: 8}}
+                    >
+                        Next page
+                    </Button>
                 </div>
             </>
         )

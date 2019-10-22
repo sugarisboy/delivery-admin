@@ -1,6 +1,6 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { Route, Switch } from 'react-router-dom'
+import {connect} from 'react-redux'
+import {Route, Switch} from 'react-router-dom'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import Container from '@material-ui/core/Container'
 import Dashboard from '../Dashboard'
@@ -8,8 +8,8 @@ import DashboardOrders from '../DashboardOrders'
 import DashboardShops from '../DashboardShops'
 import Bar from '../Bar'
 import MenuPanel from '../MenuPanel'
-import { withStyles } from '@material-ui/core'
-import ShopForm from '../ShopForm'
+import {withStyles} from '@material-ui/core'
+import DashboardProducts from "../DashboardProducts";
 
 const styles = theme => ({
     root: {
@@ -41,6 +41,10 @@ class AdminPanel extends React.Component {
             {
                 path: '/shops',
                 component: DashboardShops
+            },
+            {
+                path: '/shop/:shopId/products',
+                component: DashboardProducts
             }
         ]
     }

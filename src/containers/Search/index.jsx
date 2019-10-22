@@ -4,6 +4,7 @@ import './style.scss'
 import {get} from '../../service/api'
 import {connect} from 'react-redux'
 import {setShopAddress, setShopCityId} from "../../actions/shops-action";
+import {isEmpty} from "../../service/utils";
 
 class Search extends React.Component {
 
@@ -91,7 +92,8 @@ class Search extends React.Component {
                              }}
                 />
 
-                <button className={(label.length > 0 && Object.keys(address).length > 0) ? 'search__button-error' : 'search__button'}
+                {console.log(this.props.shopAddress)}
+                <button className={isEmpty(this.props.shopAddress) ? 'search__button-error' : 'search__button'}
                         onClick={this.onSearchClick}
                 >
                     Search
