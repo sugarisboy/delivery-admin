@@ -10,6 +10,7 @@ import Bar from '../Bar'
 import MenuPanel from '../MenuPanel'
 import {withStyles} from '@material-ui/core'
 import DashboardProducts from "../DashboardProducts";
+import ProductCreateForm from "../ProductCreateForm";
 
 const styles = theme => ({
     root: {
@@ -43,7 +44,11 @@ class AdminPanel extends React.Component {
                 component: DashboardShops
             },
             {
-                path: '/shop/:shopId/products',
+                path: '/shop/:shopId/products/create',
+                component: ProductCreateForm
+            },
+            {
+                path: '/shop/:shopId/products/',
                 component: DashboardProducts
             }
         ]

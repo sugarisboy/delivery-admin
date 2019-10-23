@@ -92,7 +92,6 @@ class Search extends React.Component {
                              }}
                 />
 
-                {console.log(this.props.shopAddress)}
                 <button className={isEmpty(this.props.shopAddress) ? 'search__button-error' : 'search__button'}
                         onClick={this.onSearchClick}
                 >

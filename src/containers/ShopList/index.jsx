@@ -8,10 +8,9 @@ import TableBody from '@material-ui/core/TableBody'
 import {connect} from "react-redux";
 import {updateTableShops} from "../../actions/shops-action";
 import Button from "@material-ui/core/Button";
-import IconButton from "@material-ui/core/IconButton";
-import SvgIcon from "@material-ui/core/SvgIcon/SvgIcon";
 import ArchiveIcon from '@material-ui/icons/Archive';
 import {Link} from "react-router-dom";
+import AddIcon from '@material-ui/icons/Add';
 
 class ShopList extends React.Component {
 
@@ -45,6 +44,7 @@ class ShopList extends React.Component {
     }
 
     render() {
+        const {match} = this.props
 
         return (
             <>
@@ -87,26 +87,40 @@ class ShopList extends React.Component {
                     </TableBody>
                 </Table>
 
-                <div style={{display: 'block', float: 'right'}}>
-                    <Button
-                        disabled={this.state.currentPage < 1}
-                        color="primary"
-                        variant="contained"
-                        onClick={e => this.handleChangePage(e, false)}
-                        style={{margin: 8}}
-                    >
-                        Previous page
-                    </Button>
+                <div style={{display: 'flex', flexDirection: 'row'}}>
+                    <div>
+                        <Button
+                            color="primary"
+                            variant="contained"
+                            onClick={e => this.handleChangePage(e, false)}
+                            style={{margin: 8}}
+                            component={Link}
+                            to={`${match.url}/create`}
+                        >
+                            <AddIcon fontSize="small"/>
+                        </Button>
+                    </div>
+                    <div style={{display: 'block', float: 'right', marginLeft: 'auto'}}>
+                        <Button
+                            disabled={this.state.currentPage < 1}
+                            color="primary"
+                            variant="contained"
+                            onClick={e => this.handleChangePage(e, false)}
+                            style={{margin: 8}}
+                        >
+                            Previous page
+                        </Button>
 
-                    <Button
-                        disabled={this.props.updatedShops.isAllShops}
-                        color="primary"
-                        variant="contained"
-                        onClick={e => this.handleChangePage(e, true)}
-                        style={{margin: 8}}
-                    >
-                        Next page
-                    </Button>
+                        <Button
+                            disabled={this.props.updatedShops.isAllShops}
+                            color="primary"
+                            variant="contained"
+                            onClick={e => this.handleChangePage(e, true)}
+                            style={{margin: 8}}
+                        >
+                            Next
+                        </Button>
+                    </div>
                 </div>
             </>
         )

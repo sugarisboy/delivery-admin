@@ -7,8 +7,10 @@
     "@material-ui/icons": "^4.4.1",
     "axios": "^0.19.0",
     "clsx": "^1.0.4",
+    "material-ui-dropzone": "^2.4.5",
     "minireset.css": "^0.0.5",
     "moment": "^2.24.0",
+    "prop-types": "latest",
     "react": "^16.8.6",
     "react-center": "^1.1.1",
     "react-dom": "^16.8.6",
@@ -17,8 +19,7 @@
     "react-scripts": "3.0.0",
     "react-select": "^3.0.8",
     "recharts": "^1.7.1",
-    "redux-thunk": "^2.3.0",
-    "prop-types": "latest"
+    "redux-thunk": "^2.3.0"
   },
   "scripts": {
     "start": "react-scripts start",

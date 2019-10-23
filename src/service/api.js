@@ -25,6 +25,17 @@ export function post(endpoint, data, headers = {}) {
     return axios.post(API_URL + endpoint, data, config)
 }
 
+export function upload(endpoint, data, headers = {}) {
+    const config = {
+        headers: {
+            ...headers,
+            ...getAuthHeaders(),
+            'Content-Type': 'multipart/form-data'
+        }
+    }
+    return axios.post(API_URL + endpoint, data, config)
+}
+
 export function patch(endpoint, data, headers = {}) {
     const config = {
         headers: {

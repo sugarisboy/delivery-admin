@@ -9,17 +9,15 @@ import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import Loader from "../Loader";
 import {addSnackbarEntry} from "../../actions/snackbars-action";
-import {get} from "../../service/api"
+import {loadCategories} from "../../service/utils"
 import Button from "@material-ui/core/Button";
+import AddIcon from '@material-ui/icons/Add';
 import {Link} from "react-router-dom";
-import IconButton from "@material-ui/core/IconButton";
-import SvgIcon from "@material-ui/core/SvgIcon";
 
 class DashboardProducts extends React.Component {
 
     constructor(props) {
         super(props)
-
         this.state = {
             shopId: props.match.params.shopId,
             currentPage: 0,
@@ -27,11 +25,14 @@ class DashboardProducts extends React.Component {
         }
     }
 
-    componentDidMount() {
-
+    async componentDidMount() {
         const {shopId, currentPage} = this.state
 
-        this.loadCategories()
+        const categories = await loadCategories()
+        this.setState({
+            ...this.state,
+            categories: categories
+        })
         this.props.updateTableProducts(currentPage, shopId)
     }
 
@@ -40,18 +41,6 @@ class DashboardProducts extends React.Component {
 
         if (prevState.currentPage !== currentPage)
             this.props.updateTableProducts(currentPage, shopId)
-    }
-
-    async loadCategories() {
-        await get('/product/categories'
-        ).then(response => {
-            this.setState({
-                ...this.state,
-                categories: response.data
-            })
-        }).catch(() => {
-            this.props.addSnackbarEntry('warning', 'Failed load categories')
-        })
     }
 
     findCategoryById(id) {
@@ -69,6 +58,8 @@ class DashboardProducts extends React.Component {
     }
 
     render() {
+        const {match} = this.props
+
         return (
             <>
                 <Title>Products shops#{this.state.shopId}</Title>
@@ -103,26 +94,39 @@ class DashboardProducts extends React.Component {
                     </Table>
                 }
 
-                <div style={{display: 'block', float: 'right'}}>
-                    <Button
-                        disabled={this.state.currentPage < 1}
-                        color="primary"
-                        variant="contained"
-                        onClick={e => this.handleChangePage(e, false)}
-                        style={{margin: 8}}
-                    >
-                        Previous page
-                    </Button>
+                <div style={{display: 'flex', flexDirection: 'row'}}>
+                    <div>
+                        <Button
+                            color="primary"
+                            variant="contained"
+                            style={{margin: 8}}
+                            component={Link}
+                            to={`${match.url}/create`}
+                        >
+                            <AddIcon fontSize="small"/>
+                        </Button>
+                    </div>
+                    <div style={{display: 'block', float: 'right', marginLeft: 'auto'}}>
+                        <Button
+                            disabled={this.state.currentPage < 1}
+                            color="primary"
+                            variant="contained"
+                            onClick={e => this.handleChangePage(e, false)}
+                            style={{margin: 8}}
+                        >
+                            Previous page
+                        </Button>
 
-                    <Button
-                        disabled={this.props.updatedProducts.isAllProducts}
-                        color="primary"
-                        variant="contained"
-                        onClick={e => this.handleChangePage(e, true)}
-                        style={{margin: 8}}
-                    >
-                        Next page
-                    </Button>
+                        <Button
+                            disabled={this.props.updatedProducts.isAllProducts}
+                            color="primary"
+                            variant="contained"
+                            onClick={e => this.handleChangePage(e, true)}
+                            style={{margin: 8}}
+                        >
+                            Next page
+                        </Button>
+                    </div>
                 </div>
             </>
         );
