@@ -34,7 +34,7 @@ class ShopMap extends Component {
             {style: polygonStyle}
         )
         polygon.draggable = true
-        polygon.getGeometry().getExterior().eachLatLngAlt(function(lat, lng, alt, index) {
+        polygon.getGeometry().getExterior().eachLatLngAlt((lat, lng, alt, index) => {
             const vertice = new map.Marker(
                 {lat, lng},
                 {
@@ -99,6 +99,7 @@ class ShopMap extends Component {
     render() {
         return (
             <div>
+                <h2>Map</h2>
                 <div id="map" style={{
                     width: '100%',
                     height: '600px'

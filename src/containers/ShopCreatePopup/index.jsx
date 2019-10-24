@@ -113,7 +113,7 @@ class ShopCreatePopup extends React.Component {
                 this.props.addSnackbarEntry('success', 'Register new user, id: ' + regData.data.id)
                 return regData.data.id;
             }).catch(async error => {
-                this.props.addSnackbarEntry('warning', 'User already created')
+                this.props.addSnackbarEntry('warning', error.response.data)
                 const {data} = await get('/user/email/' + email)
                 return data.id
             })
