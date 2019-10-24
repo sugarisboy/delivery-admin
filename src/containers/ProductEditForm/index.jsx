@@ -10,9 +10,13 @@ import {makeStyles} from "@material-ui/core";
 import {isEmpty, loadCategories} from "../../service/utils";
 import {addSnackbarEntry} from "../../actions/snackbars-action";
 import {connect} from "react-redux";
-import {post, upload} from "../../service/api";
+import {del, get, patch, upload} from "../../service/api"
+import DeleteIcon from '@material-ui/icons/Delete';
+import HighlightOffIcon from '@material-ui/icons/HighlightOff';
+import Switch from "@material-ui/core/Switch";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 
-class ProductCreateForm extends React.Component {
+class ProductEditForm extends React.Component {
 
     constructor(props) {
         super(props);
@@ -25,7 +29,9 @@ class ProductCreateForm extends React.Component {
             price: '',
             description: '',
             categoryId: '',
-            error: []
+            available: true,
+            shopId: '',
+            error: [],
         };
     }
 
@@ -33,6 +39,39 @@ class ProductCreateForm extends React.Component {
         const categories = await loadCategories()
         this.setState({
             categories: categories
+        })
+        this.loadProduct()
+    }
+
+    async loadProduct() {
+        const {match} = this.props
+        const {productId} = match.params
+
+        await get(`/product/${productId}`
+        ).then(async response => {
+            const {data} = response
+            const {available, title, price, description, category, shopId, value} = data
+            this.setState({
+                available,
+                title,
+                price,
+                description,
+                shopId,
+                value,
+                categoryId: category,
+                preview: `http://localhost:8080/img/product/${productId}.jpg`
+            })
+
+            await get(`/img/product/${productId}.jpg`).catch(error => {
+                if (error.response.data.status === 404) {
+                    this.setState({
+                        preview: undefined
+                    })
+                }
+            })
+
+        }).catch(error => {
+            console.log(error.response)
         })
     }
 
@@ -65,7 +104,6 @@ class ProductCreateForm extends React.Component {
     }
 
     handleChange(e, action) {
-
         switch (action) {
             case 'title':
                 this.setState({
@@ -87,25 +125,33 @@ class ProductCreateForm extends React.Component {
                     categoryId: e.target.value
                 })
                 break
+            case 'available':
+                this.setState({
+                    available: !this.state.available
+                })
+                break
+            case 'change-img':
+                this.setState({
+                    file: null,
+                    preview: undefined
+                })
+                break
         }
     }
 
     async handleSave(e) {
         const {match} = this.props
-        const {shopId} = match.params
-        const {url} = match
+        const {productId} = match.params
 
         const error = []
 
-        const {title, price, description, categoryId, file} = this.state
+        const {title, price, description, categoryId, file, available, shopId} = this.state
         if (isEmpty(title)) {
             error.push('title')
         } else if (title.length <= 3) {
             error.push('title')
             this.props.addSnackbarEntry('warning', 'Title too short')
         }
-        if (isEmpty(price))
-            error.push('price')
         if (price <= 0) {
             error.push('price')
             this.props.addSnackbarEntry('error', 'Price must be positive')
@@ -122,15 +168,16 @@ class ProductCreateForm extends React.Component {
             return
         }
 
-        await post('/product/create', {
-            title: title,
+        console.log(available)
+        await patch('/product/update', {
+            id: productId,
+            description,
+            title,
+            price,
+            available,
             category: categoryId,
-            description: description,
-            price: price,
-            shopId: shopId,
-            value: 1
         }).then(response => {
-            this.props.addSnackbarEntry('success', 'Product was added to shop')
+            this.props.addSnackbarEntry('success', 'Product was updated')
 
             if (file !== null) {
                 const {data} = response
@@ -145,14 +192,29 @@ class ProductCreateForm extends React.Component {
                 })
             }
 
-            this.props.history.push(url.replace('/create', ''))
+            this.props.history.push(`/shop/${shopId}/products`)
         }).catch(error => {
-            this.props.addSnackbarEntry('error', error.response.data.message)
+            error.response && this.props.addSnackbarEntry('error', error.response.data.message)
         })
     }
 
-    render() {
+    async handleDelete(e) {
+        if (window.confirm("You are sure?")) {
+            const {match} = this.props
+            const {productId} = match.params
+            const {shopId} = this.state
 
+            await del(`/product/${productId}`
+            ).then(response => {
+                this.props.history.push(`/shop/${shopId}/products`)
+            }).catch(error => {
+                this.props.addSnackbarEntry('error', "Error delete product");
+                console.log(error.response)
+            })
+        }
+    }
+
+    render() {
         const classes = makeStyles(theme => ({
             root: {
                 display: 'flex',
@@ -171,7 +233,14 @@ class ProductCreateForm extends React.Component {
         let $imagePreview = null;
         if (preview) {
             $imagePreview = (
-                <img src={preview} style={{maxWidth: '240px', maxHeight: '320px', width: 'auto'}}/>);
+                <img src={preview} style={{
+                    maxWidth: '240px',
+                    maxHeight: '320px',
+                    width: 'auto',
+                    position: 'relative',
+                    bottom: '36px'
+                }}/>
+            );
         }
 
         const {error} = this.state
@@ -180,20 +249,37 @@ class ProductCreateForm extends React.Component {
             <>
 
                 <div>
-                    <h3>Product creation:</h3>
+                    <h3>Edit product:</h3>
                     <div style={{width: '600px'}}>
 
+
+                        {/* Edit form */}
                         <div style={{display: 'flex', flexDirection: 'row'}}>
+
+                            {/* Left side */}
                             <div style={{padding: '8px'}}>
                                 <div style={{width: '240px', height: '320px', padding: '8px'}}>
-
-                                    {
-                                        $imagePreview == null ?
-                                            <Button onClick={this.handleOpenDrop.bind(this)}>
-                                                Upload Image
+                                    {$imagePreview == null ?
+                                        <Button onClick={this.handleOpenDrop.bind(this)}> Upload Image </Button>
+                                        :
+                                        <div>
+                                            <Button
+                                                style={{
+                                                    top: '8px',
+                                                    backgroundColor: 'tomato',
+                                                    position: 'relative',
+                                                    zIndex: '10',
+                                                    marginLeft: 'auto',
+                                                    float: 'right'
+                                                }}
+                                                onClick={(e) => this.handleChange(e, 'change-img')}
+                                                color="primary"
+                                                variant="contained"
+                                            >
+                                                <HighlightOffIcon/>
                                             </Button>
-                                            :
-                                            $imagePreview
+                                            {$imagePreview}
+                                        </div>
                                     }
                                 </div>
                                 <div>
@@ -204,23 +290,22 @@ class ProductCreateForm extends React.Component {
                                         variant="outlined"
                                         style={{margin: 8, paddingRight: '10px', marginTop: '21px'}}
                                     >
-                                        <InputLabel htmlFor="city">Category</InputLabel>
+                                        <InputLabel htmlFor="category">Category</InputLabel>
                                         <Select
                                             value={this.state.categoryId}
                                             onChange={(e) => this.handleChange(e, 'category')}
                                         >
-
                                             {
                                                 this.state.categories.map(category =>
                                                     <MenuItem key={category.id} value={category.id}>
                                                         {category.title}
                                                     </MenuItem>)
                                             }
-
                                         </Select>
                                     </FormControl>
                                 </div>
                             </div>
+                            {/* Right side */}
                             <div style={{padding: '8px', marginLeft: 'auto'}}>
                                 <TextField
                                     error={error.includes('title')}
@@ -256,17 +341,37 @@ class ProductCreateForm extends React.Component {
                             </div>
                         </div>
 
-                        <div style={{marginLeft: 'auto', display: 'block', float: 'right', paddingRight: '24px'}}>
-                            <Button
-                                onClick={this.handleSave.bind(this)}
-                                color="primary"
-                                variant="contained"
-                                /*component={Link}
-                                to="/"*/
-                            >
-                                Save
-                            </Button>
+
+                        {/* Down bar with button */}
+                        <div style={{display: 'flex', flexDirection: 'row'}}>
+                            <div style={{paddingLeft: '8px'}}>
+                                <FormControlLabel
+                                    value={!this.state.available}
+                                    onChange={(e) => this.handleChange(e, 'available')}
+                                    control={<Switch color="primary"/>}
+                                    label="Available"
+                                    labelPlacement="start"
+                                />
+                            </div>
+                            <div style={{marginLeft: 'auto', display: 'block', float: 'right', paddingRight: '24px'}}>
+                                <Button style={{marginRight: '8px', backgroundColor: 'tomato'}}
+                                        onClick={this.handleDelete.bind(this)}
+                                        color="primary"
+                                        variant="contained"
+                                >
+                                    <DeleteIcon/>
+                                </Button>
+                                <Button
+                                    onClick={this.handleSave.bind(this)}
+                                    color="primary"
+                                    variant="contained"
+                                >
+                                    Save edit
+                                </Button>
+                            </div>
                         </div>
+
+
                     </div>
                 </div>
 
@@ -279,7 +384,7 @@ class ProductCreateForm extends React.Component {
                     onClose={this.handleCloseDrop.bind(this)}
                 />
             </>
-        );
+        )
     }
 }
 
@@ -287,4 +392,4 @@ const mapDispatchToProps = {
     addSnackbarEntry
 }
 
-export default connect(null, mapDispatchToProps)(ProductCreateForm)
+export default connect(null, mapDispatchToProps)(ProductEditForm)

@@ -13,6 +13,8 @@ import {loadCategories} from "../../service/utils"
 import Button from "@material-ui/core/Button";
 import AddIcon from '@material-ui/icons/Add';
 import {Link} from "react-router-dom";
+import ArchiveIcon from "@material-ui/core/SvgIcon/SvgIcon";
+import EditIcon from '@material-ui/icons/Edit';
 
 class DashboardProducts extends React.Component {
 
@@ -76,6 +78,7 @@ class DashboardProducts extends React.Component {
                                 <TableCell>Price</TableCell>
                                 <TableCell>Available</TableCell>
                                 <TableCell>Description</TableCell>
+                                <TableCell/>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -86,8 +89,13 @@ class DashboardProducts extends React.Component {
                                     <TableCell>{this.findCategoryById(product.category)}</TableCell>
                                     <TableCell>{product.shopId}</TableCell>
                                     <TableCell>{product.price}</TableCell>
-                                    <TableCell>{product.available ? "" : "false"}</TableCell>
+                                    <TableCell>{product.available ? "true" : "false"}</TableCell>
                                     <TableCell>{product.description}</TableCell>
+                                    <TableCell>
+                                        <Button component={Link} to={`/product/${product.id}/edit`}>
+                                            <EditIcon fontSize="small"/>
+                                        </Button>
+                                    </TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>

@@ -25,6 +25,16 @@ export function post(endpoint, data, headers = {}) {
     return axios.post(API_URL + endpoint, data, config)
 }
 
+export function del(endpoint, headers = {}) {
+    const config = {
+        headers: {
+            ...headers,
+            ...getAuthHeaders()
+        }
+    }
+    return axios.delete(API_URL + endpoint, config)
+}
+
 export function upload(endpoint, data, headers = {}) {
     const config = {
         headers: {
