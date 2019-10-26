@@ -1,6 +1,7 @@
 import { post } from '../service/api'
 import { LOGIN_FAIL, LOGIN_SUCCESS, LOGOUT } from './action-types'
 import moment from 'moment'
+import { addSnackbarEntry } from './snackbars-action'
 
 export function successLogin() {
     return dispatch => {
@@ -16,6 +17,9 @@ export function failLogin(error) {
             type: LOGIN_FAIL,
             payload: error
         })
+        if (error) {
+            dispatch(addSnackbarEntry('error', error))
+        }
     }
 }
 
@@ -34,7 +38,7 @@ export function login(username, password) {
                 failLogin('Unknown Error')(dispatch)
             }
         } catch (e) {
-            failLogin(e.response)(dispatch)
+            failLogin(e.response.data.message)(dispatch)
         }
     }
 }

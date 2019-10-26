@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography'
 import Container from '@material-ui/core/Container'
 import { login } from '../../actions/login-actions'
 import { connect } from 'react-redux'
+import { addSnackbarEntry } from '../../actions/snackbars-action'
 
 class LoginPage extends React.Component {
 
@@ -93,10 +94,8 @@ class LoginPage extends React.Component {
     }
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-        login: (username, password) => dispatch(login(username, password))
-    }
+const mapDispatchToProps = {
+    login, addSnackbarEntry
 }
 
 export default connect(null, mapDispatchToProps)(LoginPage)

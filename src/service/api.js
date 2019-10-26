@@ -66,4 +66,4 @@ export function get(endpoint, headers = {}) {
     return axios.get(API_URL + endpoint, config)
 }
 
-export {API_URL};
+export {API_URL}

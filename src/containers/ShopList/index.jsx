@@ -70,7 +70,11 @@ class ShopList extends React.Component {
 
                             return (
                                 <TableRow key={shop.id}>
-                                    <TableCell>{shop.id}</TableCell>
+                                    <TableCell>
+                                        <Link to={`/shop/edit/${shop.id}`}>
+                                            {shop.id}
+                                        </Link>
+                                    </TableCell>
                                     <TableCell>{shop.name}</TableCell>
                                     <TableCell>{shop.description}</TableCell>
                                     <TableCell>{openTime}</TableCell>
