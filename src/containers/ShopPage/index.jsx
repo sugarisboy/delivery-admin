@@ -10,7 +10,7 @@ class ShopPage extends Component {
         return (
             <div>
                 <ShopForm id={shopId}/>
-                <ShopMap/>
+                <ShopMap id={shopId}/>
             </div>
         )
     }
