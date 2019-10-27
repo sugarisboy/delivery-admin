@@ -13,7 +13,7 @@ import InputLabel from "@material-ui/core/InputLabel";
 import {makeStyles} from "@material-ui/core";
 import {get, post} from "../../../service/api";
 import {isEmpty} from "../../../utils/string-utils";
-import Search from "../../Search";
+import Search from "../../admin/Search";
 import {connect} from "react-redux";
 import {setShopCityId} from "../../../actions/shops-action";
 import {addSnackbarEntry} from "../../../actions/snackbars-action";
