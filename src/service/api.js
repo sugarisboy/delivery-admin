@@ -25,6 +25,27 @@ export function post(endpoint, data, headers = {}) {
     return axios.post(API_URL + endpoint, data, config)
 }
 
+export function del(endpoint, headers = {}) {
+    const config = {
+        headers: {
+            ...headers,
+            ...getAuthHeaders()
+        }
+    }
+    return axios.delete(API_URL + endpoint, config)
+}
+
+export function upload(endpoint, data, headers = {}) {
+    const config = {
+        headers: {
+            ...headers,
+            ...getAuthHeaders(),
+            'Content-Type': 'multipart/form-data'
+        }
+    }
+    return axios.post(API_URL + endpoint, data, config)
+}
+
 export function patch(endpoint, data, headers = {}) {
     const config = {
         headers: {
@@ -45,4 +66,14 @@ export function get(endpoint, headers = {}) {
     return axios.get(API_URL + endpoint, config)
 }
 
-export {API_URL};
+export async function loadCategories() {
+    return await get('/product/categories'
+    ).then(response => {
+        return response.data
+    }).catch(error => {
+        console.log('Categories load error:\n' + error)
+        //this.props.addSnackbarEntry('warning', 'Failed load categories')
+    })
+}
+
+export {API_URL}
