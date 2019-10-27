@@ -66,4 +66,14 @@ export function get(endpoint, headers = {}) {
     return axios.get(API_URL + endpoint, config)
 }
 
+export async function loadCategories() {
+    return await get('/product/categories'
+    ).then(response => {
+        return response.data
+    }).catch(error => {
+        console.log('Categories load error:\n' + error)
+        //this.props.addSnackbarEntry('warning', 'Failed load categories')
+    })
+}
+
 export {API_URL}

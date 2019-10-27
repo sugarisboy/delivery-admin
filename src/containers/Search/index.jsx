@@ -4,7 +4,7 @@ import './style.scss'
 import {get} from '../../service/api'
 import {connect} from 'react-redux'
 import {setShopAddress, setShopCityId} from "../../actions/shops-action";
-import {isEmpty} from "../../service/utils";
+import { isEmpty } from '../../utils/string-utils'
 
 class Search extends React.Component {
 

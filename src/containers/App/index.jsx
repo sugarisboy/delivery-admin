@@ -1,10 +1,10 @@
 import React from 'react'
-import LoginPage from '../LoginPage'
-import AdminPanel from '../AdminPanel'
+import LoginPage from '../admin/LoginPage'
+import AdminPanel from '../admin/AdminPanel'
 import {connect} from 'react-redux'
 import {checkAuth} from '../../actions/login-actions'
 import {BrowserRouter} from 'react-router-dom'
-import SnackbarTree from "../SnackbarTree";
+import SnackbarTree from "../admin/SnackbarTree";
 
 class App extends React.Component {
 
