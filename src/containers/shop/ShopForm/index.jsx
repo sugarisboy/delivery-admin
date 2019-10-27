@@ -1,9 +1,10 @@
 import React from 'react'
 import TextField from '@material-ui/core/TextField'
-import { get, patch } from '../../../service/api'
+import { API_URL, get, patch, upload } from '../../../service/api'
 import Button from '@material-ui/core/Button'
 import { connect } from 'react-redux'
 import { addSnackbarEntry } from '../../../actions/snackbars-action'
+import { DropzoneDialog } from 'material-ui-dropzone'
 
 class ShopForm extends React.Component {
 
@@ -18,6 +19,7 @@ class ShopForm extends React.Component {
                 deliveryCost: 0,
                 freeDeliveryCost: 0,
                 minOrderCost: 0,
+                preview: ''
             }
         }
     }
@@ -36,7 +38,10 @@ class ShopForm extends React.Component {
                 freeDeliveryCost: shopData.freeDeliveryCost,
                 minOrderCost: shopData.minOrderCost,
                 id: shopData.id
-            }
+            },
+            dropzoneOpen: false,
+            preview: `${API_URL}/img/shop/${id}.jpg`,
+            file: null
         })
     }
 
@@ -44,12 +49,32 @@ class ShopForm extends React.Component {
         e.preventDefault()
 
         try {
-            await patch('/shop/update', {
+            const resp = await patch('/shop/update', {
                 ...this.state.shopData
             })
+
+            const shopId = resp.data.id
+            if (shopId) {
+                this.uploadImage(shopId)
+            }
+
         } catch (e) {
             const {data} = e.response
             this.props.addSnackbarEntry('error', `${data.field} | ${data.message}`)
+        }
+    }
+
+    async uploadImage(shopId) {
+        const {file} = this.state
+        if (file) {
+            const formData = new FormData()
+            formData.set('img', file)
+
+            try {
+                await upload(`/image/shop/${shopId}`, formData)
+            } catch (e) {
+                this.props.addSnackbarEntry('error', 'Unable to upload image!')
+            }
         }
     }
 
@@ -64,14 +89,40 @@ class ShopForm extends React.Component {
         })
     }
 
+    handleOpenDrop(isOpen) {
+        this.setState({dropzoneOpen: isOpen})
+    }
+
+    handleSaveDrop = files => {
+        const file = files[0]
+
+        let reader = new FileReader()
+
+        reader.onloadend = () => {
+            this.setState({
+                file: file,
+                preview: reader.result,
+                dropzoneOpen: false
+            });
+        }
+
+        reader.readAsDataURL(file)
+    }
+
     render() {
-        const {shopData} = this.state
+        const {shopData, preview} = this.state
 
         return (
             <div>
                 <h1>{shopData.name}</h1>
                 {shopData.name.length > 0 && (
-                    <>
+                    <div>
+                        {preview && (<img src={`${preview}`} alt="preview" style={{
+                            maxWidth: '240px',
+                            maxHeight: '320px',
+                            width: 'auto',
+                        }}/>)}
+
                         <h2>Edit</h2>
                         <form onSubmit={this.submit} style={{
                             display: 'flex',
@@ -122,6 +173,10 @@ class ShopForm extends React.Component {
                                        placeholder="Minimum order cost"
                             />
 
+                            <Button onClick={() => this.handleOpenDrop(true)}>
+                                Upload Image
+                            </Button>
+
                             <Button
                                 color="primary"
                                 variant="contained"
@@ -131,7 +186,16 @@ class ShopForm extends React.Component {
                             </Button>
 
                         </form>
-                    </>
+
+                        <DropzoneDialog
+                            open={this.state.dropzoneOpen}
+                            onSave={this.handleSaveDrop}
+                            acceptedFiles={['image/*']}
+                            showPreviews={true}
+                            maxFileSize={5000000}
+                            onClose={() => this.handleOpenDrop(false)}
+                        />
+                    </div>
                 )}
             </div>
         )
