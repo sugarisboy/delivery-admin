@@ -132,7 +132,8 @@ class ShopList extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-    updatedShops: state.shops.updatedShops
+    updatedShops: state.shops.updatedShops,
+    role: state.login.role
 })
 
 const mapDispatchToProps = {updateTableShops}

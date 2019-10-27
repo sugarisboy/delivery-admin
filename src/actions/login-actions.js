@@ -2,15 +2,18 @@ import { post } from '../service/api'
 import { LOGIN_FAIL, LOGIN_SUCCESS, LOGOUT } from './action-types'
 import moment from 'moment'
 import { addSnackbarEntry } from './snackbars-action'
+import { ADMIN, PARTNER, USER } from '../service/roles'
 
-export function successLogin(role) {
+export function successLogin(role, username) {
     return dispatch => {
-        if (role === 'USER') {
+        if (role === USER) {
             dispatch(failLogin('Access denied!'))
         } else {
             dispatch({
                 type: LOGIN_SUCCESS,
-                payload: role
+                payload: {
+                    role, username
+                }
             })
         }
     }
@@ -42,7 +45,8 @@ export function login(username, password) {
                 localStorage.setItem('token', access)
                 localStorage.setItem('key', key)
                 const role = extractRole(tokenData)
-                dispatch(successLogin(role))
+                const username = tokenData.sub
+                dispatch(successLogin(role, username))
             } else {
                 dispatch(failLogin('Unknown Error'))
             }
@@ -54,13 +58,13 @@ export function login(username, password) {
 
 function extractRole(tokenData) {
     const roles = tokenData.roles
-    let role = 'USER'
+    let role = USER
 
-    if (roles.indexOf('PARTNER') !== -1) {
-        role = 'PARTNER'
+    if (roles.indexOf(PARTNER) !== -1) {
+        role = PARTNER
     }
-    if (roles.indexOf('ADMIN') !== -1) {
-        role = 'ADMIN'
+    if (roles.indexOf(ADMIN) !== -1) {
+        role = ADMIN
     }
 
     return role
@@ -74,11 +78,15 @@ export function checkAuth() {
             dispatch(failLogin())
         } else {
             const tokenData = parseJwt(token)
+
             const now = moment()
             const expDate = moment(tokenData.exp * 1000)
+
             const role = extractRole(tokenData)
+            const username = tokenData.sub
+
             if (expDate.isAfter(now)) {
-                dispatch(successLogin(role))
+                dispatch(successLogin(role, username))
             } else {
                 dispatch(failLogin())
                 localStorage.removeItem('token')
