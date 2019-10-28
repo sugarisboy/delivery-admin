@@ -1,14 +1,14 @@
 import axios from 'axios'
 
-const API_URL = 'http://localhost:8080'
+const API_URL = process.env.REACT_APP_API_URL
 
 function getAuthHeaders() {
+    console.log(API_URL)
     const token = localStorage.getItem('token')
     const key = localStorage.getItem('key')
 
     if (token && key) {
         return {
-            'Access-Control-Allow-Origin': '*',
             'Authorization': 'Bearer_' + token,
             'Key': key
         }
