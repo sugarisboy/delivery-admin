@@ -7,7 +7,7 @@ import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
 import FormControl from '@material-ui/core/FormControl'
 import { makeStyles } from '@material-ui/core'
-import { del, get, loadCategories, patch, upload } from '../../../service/api'
+import { API_URL, del, get, loadCategories, patch, upload } from '../../../service/api'
 import { addSnackbarEntry } from '../../../actions/snackbars-action'
 import { connect } from 'react-redux'
 import DeleteIcon from '@material-ui/icons/Delete'
@@ -59,7 +59,7 @@ class ProductEditForm extends React.Component {
                 shopId,
                 value,
                 categoryId: category,
-                preview: `http://localhost:8080/img/product/${productId}.jpg`
+                preview: `${API_URL}/img/product/${productId}.jpg`
             })
 
             await get(`/img/product/${productId}.jpg`).catch(error => {

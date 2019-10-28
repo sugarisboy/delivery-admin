@@ -2,15 +2,29 @@ import React from 'react'
 import {connect} from 'react-redux'
 import ShopStats from "../../shop/ShopStats";
 import {updateTableShops} from "../../../actions/shops-action";
+import Grid from '@material-ui/core/Grid'
+import React from 'react'
+import { connect } from 'react-redux'
+import ShopStats from '../../shop/ShopStats'
+import { PARTNER } from '../../../service/roles'
 
 class Dashboard extends React.Component {
 
     constructor(props) {
         super(props)
+
+        this.state = {
+            shops: []
+        }
     }
 
     componentDidMount() {
         this.props.updateTableShops()
+        const {role} = this.props.login
+
+        if (role === PARTNER) {
+            
+        }
     }
 
     render() {
@@ -25,25 +39,15 @@ class Dashboard extends React.Component {
                     ))
                 }
             </div>
-            /*<Grid container spacing={3}>
-                {/!* Recent Deposits *!/}
-                <Grid item xs={12} md={4} lg={3}>
-                    <Paper>
-                        {/!*<Deposits />*!/}
-
-                    </Paper>
-
-                </Grid>
-            </Grid>*/
         )
     }
 }
 
 const mapStateToProps = (state) => ({
-    updatedShops: state.shops.updatedShops
+    updatedShops: state.shops.updatedShops,
+    login: state.login
 })
 
 const mapDispatchToProps = {updateTableShops}
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard)

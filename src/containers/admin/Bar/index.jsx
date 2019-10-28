@@ -13,8 +13,9 @@ const styles = (theme) => ({
         marginLeft: 240,
         width: `calc(100% - 167px)`,
     },
-    logout: {
-        marginLeft: 'auto'
+    rightBlock: {
+        marginLeft: 'auto',
+        display: 'flex'
     }
 })
 
@@ -29,17 +30,27 @@ class Bar extends React.PureComponent {
                     <Typography component="h1" variant="h6" color="inherit" noWrap>
                         Qwik
                     </Typography>
-                    <Button className={classes.logout} color="inherit" onClick={() => this.props.logout()}>
-                        Logout
-                    </Button>
+                    <div className={classes.rightBlock}>
+                        <Typography component="span" variant="h6" color="inherit" noWrap>
+                            {this.props.username} |
+                        </Typography>
+
+                        <Button className={classes.logout} color="inherit" onClick={() => this.props.logout()}>
+                            Logout
+                        </Button>
+                    </div>
                 </Toolbar>
             </AppBar>
         )
     }
 }
 
+const mapStateToProps = state => ({
+    username: state.login.username
+})
+
 const mapDispatchToProps = (dispatch) => ({
   logout: () => dispatch(logout())
 })
 
-export default connect(null, mapDispatchToProps)(withStyles(styles)(Bar))
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Bar))

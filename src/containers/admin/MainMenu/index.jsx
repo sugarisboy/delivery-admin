@@ -47,9 +47,9 @@ class MainMenu extends React.PureComponent {
                 href: '/partners'
             },
             {
-                title: 'System',
+                title: 'Settings',
                 icon: <SettingsIcon/>,
-                href: '/partners'
+                href: '/settings'
             }
         ]
     }

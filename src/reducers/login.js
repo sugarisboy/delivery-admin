@@ -1,9 +1,11 @@
 import { LOGIN_FAIL, LOGIN_SUCCESS, LOGOUT } from '../actions/action-types'
+import { USER } from '../service/roles'
 
 const defaultState = {
     isLoggedIn: false,
     loginError: null,
-    role: 'user'
+    role: USER,
+    username: ''
 }
 
 export default (state = defaultState, action) => {
@@ -20,7 +22,8 @@ export default (state = defaultState, action) => {
             return {
                 ...state,
                 isLoggedIn: true,
-                role: payload
+                role: payload.role,
+                username: payload.username
             }
         case LOGOUT: {
             return {
