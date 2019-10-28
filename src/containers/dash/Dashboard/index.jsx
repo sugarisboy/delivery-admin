@@ -1,9 +1,7 @@
-import Grid from '@material-ui/core/Grid'
-import Paper from '@material-ui/core/Paper'
-import Deposits from '../Deposits'
 import React from 'react'
-import { connect } from 'react-redux'
+import {connect} from 'react-redux'
 import ShopStats from "../../shop/ShopStats";
+import {updateTableShops} from "../../../actions/shops-action";
 
 class Dashboard extends React.Component {
 
@@ -11,23 +9,41 @@ class Dashboard extends React.Component {
         super(props)
     }
 
+    componentDidMount() {
+        this.props.updateTableShops()
+    }
 
     render() {
+        const {updatedShops} = this.props
+        const {shops} = updatedShops
+
         return (
-            <Grid container spacing={3}>
-                {/* Recent Deposits */}
+            <div>
+                {
+                    updatedShops && shops.map(shop => (
+                        <ShopStats key={shop.id} shopId={shop.id} title={shop.name}/>
+                    ))
+                }
+            </div>
+            /*<Grid container spacing={3}>
+                {/!* Recent Deposits *!/}
                 <Grid item xs={12} md={4} lg={3}>
                     <Paper>
-                        {/*<Deposits />*/}
+                        {/!*<Deposits />*!/}
 
                     </Paper>
 
-                    <ShopStats shopId={6}/>
-
                 </Grid>
-            </Grid>
+            </Grid>*/
         )
     }
 }
 
-export default connect()(Dashboard)
+const mapStateToProps = (state) => ({
+    updatedShops: state.shops.updatedShops
+})
+
+const mapDispatchToProps = {updateTableShops}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard)
