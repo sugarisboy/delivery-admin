@@ -1,8 +1,8 @@
-import Grid from '@material-ui/core/Grid'
 import React from 'react'
-import { connect } from 'react-redux'
-import ShopStats from '../../shop/ShopStats'
-import { PARTNER } from '../../../service/roles'
+import {connect} from 'react-redux'
+import ShopStats from "../../shop/ShopStats";
+import {updateTableShops} from "../../../actions/shops-action";
+import {PARTNER} from '../../../service/roles'
 
 class Dashboard extends React.Component {
 
@@ -15,6 +15,7 @@ class Dashboard extends React.Component {
     }
 
     componentDidMount() {
+        this.props.updateTableShops()
         const {role} = this.props.login
 
         if (role === PARTNER) {
@@ -23,18 +24,26 @@ class Dashboard extends React.Component {
     }
 
     render() {
+        const {updatedShops} = this.props
+        const {shops} = updatedShops
+
         return (
-            <Grid container spacing={3}>
-                <Grid item xs={12} md={4} lg={3}>
-                    <ShopStats shopId={6}/>
-                </Grid>
-            </Grid>
+            <div>
+                {
+                    updatedShops && shops.map(shop => (
+                        <ShopStats key={shop.id} shopId={shop.id} title={shop.name}/>
+                    ))
+                }
+            </div>
         )
     }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
+    updatedShops: state.shops.updatedShops,
     login: state.login
 })
 
-export default connect(mapStateToProps)(Dashboard)
+const mapDispatchToProps = {updateTableShops}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard)
