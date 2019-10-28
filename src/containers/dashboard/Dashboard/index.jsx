@@ -2,11 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 import ShopStats from "../../shop/ShopStats";
 import {updateTableShops} from "../../../actions/shops-action";
-import Grid from '@material-ui/core/Grid'
-import React from 'react'
-import { connect } from 'react-redux'
-import ShopStats from '../../shop/ShopStats'
-import { PARTNER } from '../../../service/roles'
+import {PARTNER} from '../../../service/roles'
 
 class Dashboard extends React.Component {
 
