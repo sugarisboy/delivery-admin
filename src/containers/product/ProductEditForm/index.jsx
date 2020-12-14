@@ -59,7 +59,7 @@ class ProductEditForm extends React.Component {
                 shopId,
                 value,
                 categoryId: category,
-                preview: `${API_URL}/img/product/${productId}.jpg`
+                preview: `${API_URL}/product/${productId}.jpg`
             })
 
             await get(`/img/product/${productId}.jpg`).catch(error => {

@@ -40,7 +40,7 @@ class ShopForm extends React.Component {
                 id: shopData.id
             },
             dropzoneOpen: false,
-            preview: `${API_URL}/img/shop/${id}.jpg`,
+            preview: `${API_URL}/shop/${id}.jpg`,
             file: null
         })
     }
